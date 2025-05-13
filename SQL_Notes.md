@@ -55,8 +55,11 @@
 
 ## **Data Warehouse Architecture**
 
+![image](https://github.com/user-attachments/assets/19ac9003-da2d-4262-9bb3-179cf4b15dd5)
 
-
+---
+# **Data Mart**
+- 
 
 
 
