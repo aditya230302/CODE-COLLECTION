@@ -134,4 +134,35 @@
 
 ---
 # **OLTP (Online Transactional Processing)**
-- 
+- It facilitates and manageges transaction oriented applications (typically involving data entry and retrieval).
+- OLTP enabels large number od database transactions(insertion, deletion or query of data in a DB) made by large number of people over the internet.
+- OLTP system drives many of the financial transactions made everyday including online transaction, ATM transaction, E-commerce and in-store purchase.
+- Examples include:
+  - Database Management Systems (DBMS): PostgreSQL, MySQL, Oracle Database, Microsoft SQL Server, CockroachDB, IBM Db2, MongoDB. 
+  - Applications: ATMs, online banking, e-commerce, ticketing systems, and recordkeeping systems like health records and inventory control.
+
+![image](https://github.com/user-attachments/assets/a2867627-a7eb-4674-9bb1-1f0e3c8f12f3)
+
+---
+# **OLTP vs OLAP**
+
+| Feature             | **OLTP**                                                | **OLAP**                                                    |
+| ------------------- | ------------------------------------------------------- | ----------------------------------------------------------- |
+| **Full Form**       | Online Transaction Processing                           | Online Analytical Processing                                |
+| **Purpose**         | Handles **day-to-day transactions**                     | Used for **data analysis and decision making**              |
+| **Users**           | **Clerks, cashiers, DBAs**                              | **Analysts, managers, executives**                          |
+| **Operations**      | **Insert, Update, Delete** (short, atomic transactions) | **Read-heavy operations** like complex queries and analysis |
+| **Data Volume**     | Processes **large numbers of small transactions**       | Works with **fewer but complex and large queries**          |
+| **Response Time**   | **Milliseconds to seconds**                             | **Seconds to minutes (can be longer)**                      |
+| **Database Design** | **Highly normalized** (to reduce redundancy)            | **De-normalized** (for faster read access and joins)        |
+| **Data Source**     | Real-time **current data**                              | Historical **aggregated data**                              |
+| **Examples**        | Banking systems, e-commerce, retail POS systems         | Data warehouses, business reporting systems                 |
+
+
+## **OLTP and OLAP working together**
+- user will give queries to the data warehouse/data mart through OLTP Database for analytical pr=urpose and the query will go to OLAP cube to acces data.
+
+![image](https://github.com/user-attachments/assets/87bd5882-bfab-41ad-a414-bfd839e544b1)
+
+---
+
