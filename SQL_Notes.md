@@ -175,5 +175,126 @@
 - **Facts** : are the numeric volume to analyze business.
 - It helps to provide fast and accurate data-related answers to complex business queries.
 
-![image](https://github.com/user-attachments/assets/d584d946-922c-452b-b9f0-895b6728653d)
+![image](https://github.com/user-attachments/assets/2b0a9d40-558d-47f1-9c40-7fbc9eb96f8e)
 
+---
+# **Schema for Multidimensional Model**
+## **1. Star Schema**
+- It is the simplest data warhouse schema because it resembles a star.
+- In star every Dimensional table is connected to the Fact table using primary key(dimensional table) to foreign key(Fact table) relationship.
+
+![image](https://github.com/user-attachments/assets/eeb69298-8476-412b-afa4-5194aea7f0b6)
+
+## **2. Snowflake Schema**
+- In Snowflake schema dimensional tables are connected to other dimensional tables.
+- It is more complex than Star Schema.
+
+![image](https://github.com/user-attachments/assets/f047ed57-9a8d-4e67-9a81-54e85dcbd673)
+
+## **3. Fact Constellation Schema**
+- This schema has multiple fact tables, which dhare many fimensional tables.
+- this type of schema can be viewed as a star and snowflake schema, hence it is also called **Galaxy Schema** or Fact Constellation Schema.
+- This main disadvantage of this shema is that it has more complex design.
+
+![image](https://github.com/user-attachments/assets/470d0fa6-673c-49eb-b9c3-45ab997c16f9)
+
+---
+# **SQL Query Execution Order**
+| **Step** | **Clause**       | **Description**                                                         |
+| -------- | ---------------- | ----------------------------------------------------------------------- |
+| 1        | `FROM`           | Identifies source tables and joins them if needed                       |
+| 2        | `WHERE`          | Filters rows before grouping                                            |
+| 3        | `GROUP BY`       | Groups rows based on specified columns                                  |
+| 4        | `HAVING`         | Filters groups (after aggregation)                                      |
+| 5        | `SELECT`         | Selects columns or expressions to return                                |
+| 6        | `DISTINCT`       | Removes duplicate rows (if specified)                                   |
+| 7        | `ORDER BY`       | Sorts the result set                                                    |
+| 8        | `LIMIT / OFFSET` | Limits the number of rows returned (if used, e.g., in MySQL/PostgreSQL) |
+---
+# **SQL Command Types**
+
+## **1. DDL (Data Definition Language)**
+- Used to define and manage database structure (tables, schemas, etc.)
+- **CREATE** : used to create new tables/databases/views/stored procedures/functions/triggers/indexes
+- **ALTER** : used to modify design of a table (ADD/REMOVE/MODIFY)
+- **DROP** : Remove Table/databases/views/stored procedures/functions/triggers/indexes
+- **TRUNCATE** : Remove all rows from a table without logging individual row deletions. Faster than DELETE.
+
+## **2. DML (Data Manipulation Language)**
+- Used to manipulate data in tables.
+- **INSERT** : Inserting new records
+- **UPDATE** : Modifying existing records
+- **DELETE** : Delete specific rows from a table (with WHERE clause).
+  
+## **3. TCL (Transaction Control Language)**
+- Used to manage transactions (group of SQL operations).
+- **BEGIN TRANSACTION** : Starts a new transaction block.
+- **COMMIT** : Permanently saves all changes made during the transaction.
+- **ROLLBACK** : 	Undoes changes since the last COMMIT.
+- **SAVE** : 	Sets a point in a transaction to which you can roll back to later.
+
+## **4. DCL (Data Control Language)**
+- Used to control access and permissions to data in the database.
+- **GRANT** : Give privileges/access to users/roles (e.g., SELECT, INSERT, EXECUTE).
+- **REVOKE** : Remove access/privileges granted to users/roles.
+```sql
+-- Create a new user (assumes login already exists)
+CREATE USER John FOR LOGIN JohnLogin;
+
+-- Grant SELECT permission on the Employees table to John
+GRANT SELECT ON Employees TO John;
+
+-- Revoke SELECT permission from John
+REVOKE SELECT ON Employees FROM John;
+```
+## **5. DQL (Data Query Language)**
+- Used to query and fetch data from the database.
+- **SELECT** : 	Retrieves data from one or more tables/views. It's the only DQL command.
+
+---
+Every table or any object created in DB will have schema called as `**DBO.<OBJECT_Name>**`
+- example of objects are : Database object, tables, views,index,stored procedures, functions, etc.
+---
+# **SELECT**
+- Used to get data from table.
+- Syntax :
+```sql
+SELECT <column names with commas> from <Table name>
+```
+- Example :
+```Sql
+-- " * " is used to fetch all records
+SELECT *
+FROM Employee_Table
+
+Select Emp_name, Emp_ID
+from Employee_Table
+```
+---
+# **SQL Clauses**
+| **Clause** | **Purpose**                                                            |
+| ---------- | ---------------------------------------------------------------------- |
+| `FROM`     | Specifies the **table** to retrieve data from.                         |
+| `WHERE`    | Filters rows **before** grouping or selection.                         |
+| `GROUP BY` | Groups rows that have the same values in specified columns.            |
+| `HAVING`   | Filters **groups** after `GROUP BY` (like `WHERE` but for aggregates). |
+| `ORDER BY` | Sorts the result set by one or more columns.                           |
+
+## **WHERE CLause**
+- Filters rows **before** grouping or selection
+- written always after table name only
+- if there are multiple conditions then operators are used
+- Syntax :
+```Sql
+SELECT <column name>
+FROM <Table>
+WHERE <Condition>
+```
+- Example :
+```sql
+SELECT * FROM Employee_Table WHERE DeptNo = 10
+SELECT * FROM Employee_Table WHERE Job = 'Clerk' -- string is mentioned in ' '
+```
+---
+# **Operators**
+- `IN`, `NOT IN` : 
