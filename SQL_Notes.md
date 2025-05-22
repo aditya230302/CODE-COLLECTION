@@ -81,7 +81,7 @@
 
 ---
 # **Data Mart**
-- Subsets of DWH, they are comprised completely of only specific departments/category/buisness units.
+- Subsets of DWH, they are comprised completely of only specific departments/category/business units.
 - It exists independently without being integerated into a data warehouse.
 - they provide quick and easy access to data for individual category, eliminating the need to search through the entire data warehouse.
 
@@ -125,7 +125,7 @@
 - OLAP is used for data preparation in data data warehouses.
 - It is a computing method that allows users to easily and selectively extract data.
 - It is used to query data in order to analyze it from different point of views.
-- OLAP buisness intelligence often helps in trend analysis, financial reporting, sales forecasting, budgeting and other planning processes.
+- OLAP business intelligence often helps in trend analysis, financial reporting, sales forecasting, budgeting and other planning processes.
 - OLAP helps in making data mart.
 - OLAP maintains data in a cubical structure.
 - Examples of OLAP Tools: IBM Cognos, Oracle OLAP, Tableau, Domo, Sisense, and Reveal. 
@@ -165,4 +165,15 @@
 ![image](https://github.com/user-attachments/assets/87bd5882-bfab-41ad-a414-bfd839e544b1)
 
 ---
+# **Multidimensioanl Data Model**
+- The multidimensional datamodel is used to store the data in the form of **Data cubes**.
+- A data cube allows data to be viewed in multiple dimensions.
+- Here the dimensions are the entities with respect to which an organisation keeps the records.
+- It provides machanism to store data and a way for business analysis.
+- **Dimensions** and **Facts** are two components of multidimensional data model.
+- **Dimensions** : are the text attributes to analyze data
+- **Facts** : are the numeric volume to analyze business.
+- It helps to provide fast and accurate data-related answers to complex business queries.
+
+![image](https://github.com/user-attachments/assets/d584d946-922c-452b-b9f0-895b6728653d)
 
