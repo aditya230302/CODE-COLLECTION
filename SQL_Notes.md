@@ -57,6 +57,28 @@
 
 ![image](https://github.com/user-attachments/assets/19ac9003-da2d-4262-9bb3-179cf4b15dd5)
 
+## **Data Warhousing Process**
+1. **Data Cleaning:** It includes filling in missing values, smoothing noisy data removing outliers and resolving incosistencies.
+2. **Data infegeration:** It includes infegeration of multiple database, data cubes and files.
+3. **Data transformation:** Converts data fron host format to warehouse format
+4. **Data loading:** Sort, summarize, consolidate, compute, views, check integrity
+5. **Data refreshing:** Propagates the updates from data sources to the warehouse.
+
+## **Characteristics Of Datawarehouse**
+1. **Subject ariented:** It can be used to analyze a particular subject area
+2. **Integerated:** It integerates data from. multiple data sources.
+3. **Time variant:** Historical data is kept in a data warehouse.
+4. **Non volatile:** Once data is in the warehouse, it will not changes
+
+## **Components of data warehouse:**
+- **Central Database:** A database serves as the foundation of your data warehouse
+- **Data Integeration:** Data is pulled from many Source system and modified.
+- **Meta Data:** It specifies the source, usage, values and other features of the data
+- **Access Tools:** It allows users to interact with data in your data warehouse. E.g. OLAP tools.
+
+## **Applications of Data Warehouse**
+- Services, Banking, INsurance, Finance, Retailing, Education, Manufacturing, Healthcare
+
 ---
 # **Data Mart**
 - Subsets of DWH, they are comprised completely of only specific departments/category/buisness units.
@@ -75,8 +97,41 @@
 
 ## **Data Mart Architecture**
 
+![image](https://github.com/user-attachments/assets/6e8982c5-de15-42d1-bda9-b7378d186a25)
 
+---
+# **Data Mart vs Data Warehouse**
 
+| Feature             | **Data Mart**                                                                        | **Data Warehouse**                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| **Main Definition** | A **subset** of a Data Warehouse. Focused on a specific business line or department. | A **central repository** of data collected from various departments across an organization. |
+| **Size**            | Typically **less than 100 GB**                                                       | Usually **more than 100 GB**                                                                |
+| **Scope**           | Covers a **single department or business unit**                                      | Covers the **entire organization**                                                          |
+| **Time to Build**   | Takes **a few weeks to a few months**                                                | Takes **many months or even years**                                                         |
+| **Organization**    | Managed by **individual departments**                                                | Managed by **central IT or data team**                                                      |
 
+---
+# **DBMS vs Data Warehouse**
 
+| **DBMS**   | **Data Warehouse** |
+| ---------- | ------------------ |
+| It is Transaction oriented | It is Subject oriented |
+| Contains detailed data | Contains historic data |
+| It captures data | It analyzes data |
+| Application Oriented | Subject Oriented |
 
+---
+# **OLAP (Online Analytical Processing)**
+- OLAP is used for data preparation in data data warehouses.
+- It is a computing method that allows users to easily and selectively extract data.
+- It is used to query data in order to analyze it from different point of views.
+- OLAP buisness intelligence often helps in trend analysis, financial reporting, sales forecasting, budgeting and other planning processes.
+- OLAP helps in making data mart.
+- OLAP maintains data in a cubical structure.
+- Examples of OLAP Tools: IBM Cognos, Oracle OLAP, Tableau, Domo, Sisense, and Reveal. 
+
+![image](https://github.com/user-attachments/assets/a6ec80c3-2a91-41dc-a765-b205012536a6)
+
+---
+# **OLTP (Online Transactional Processing)**
+- 
