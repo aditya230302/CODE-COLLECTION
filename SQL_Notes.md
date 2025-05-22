@@ -59,7 +59,22 @@
 
 ---
 # **Data Mart**
-- 
+- Subsets of DWH, they are comprised completely of only specific departments/category/buisness units.
+- It exists independently without being integerated into a data warehouse.
+- they provide quick and easy access to data for individual category, eliminating the need to search through the entire data warehouse.
+
+## **Uses of Data Mart**
+- Indentifying trends and patterns
+- Making informed decisions
+- improving the operational efficiency
+
+## **Benefits of Data Mart**
+- Improved access of data
+- Faster analysis
+- Reduced Costs
+
+## **Data Mart Architecture**
+
 
 
 
