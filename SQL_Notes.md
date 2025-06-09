@@ -255,7 +255,7 @@ REVOKE SELECT ON Employees FROM John;
 Every table or any object created in DB will have schema called as `**DBO.<OBJECT_Name>**`
 - example of objects are : Database object, tables, views,index,stored procedures, functions, etc.
 ---
-# **SELECT**
+# **SELECT COMMAND**
 - Used to get data from table.
 - Syntax :
 ```sql
