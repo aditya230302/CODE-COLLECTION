@@ -26,9 +26,9 @@
 ---
 
 ## **Types of Data**
-**1. Structured Data** : Data that is formated properly and can be easily interpreted by anyone. It is supported by DBMS/RDBMS.
-**2. Semi-Structured Data** : Partially structured data. E.g. emails, json files, xml/html files, csv files.
-**3. Unstructured Data** : Unformated Data. E.g. audio, video, images, etc.
+- **1. Structured Data** : Data that is formated properly and can be easily interpreted by anyone. It is supported by DBMS/RDBMS.
+- **2. Semi-Structured Data** : Partially structured data. E.g. emails, json files, xml/html files, csv files.
+- **3. Unstructured Data** : Unformated Data. E.g. audio, video, images, etc.
 
 ---
 ## **Types of Databases**
