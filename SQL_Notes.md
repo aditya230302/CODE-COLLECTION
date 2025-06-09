@@ -728,10 +728,16 @@ INNER JOIN PRODUCT P
 ON P.DEPTNO = B.DEPTNO
 ```
 ---
-Here’s a structured and detailed **table of common SQL Data Types**, including usage examples and descriptions:
+# **SQL SET OPERATORS**
+## **UNION**
+
+## **UNION ALL**
+
+## **INTERSECT**
+
+## **EXCEPT**
 
 ---
-
 # **SQL Data Types**
 
 | **Data Type**            | **Description**                                           | **Example**            |
@@ -775,7 +781,7 @@ Here’s a structured and detailed **table of common SQL Data Types**, including
 - **DROP** : Remove Table/databases/views/stored procedures/functions/triggers/indexes
 - **TRUNCATE** : Remove all rows from a table without logging individual row deletions. Faster than DELETE.
 
-## **CREATE : To Create a Table **
+## **CREATE : To Create a Table**
 ### 🧾 Syntax:
 ```sql
 CREATE TABLE <TABLE NAME> (
@@ -953,20 +959,109 @@ SELECT COUNT(*) FROM Employees;  -- Output: 0
 
 ---
 
-# **DML Commands (Data Manipulation language)
+# **DML Commands (Data Manipulation language)**
 - Used to manipulate data in tables.
 - **INSERT** : Inserting new records
 - **UPDATE** : Modifying existing records
 - **DELETE** : Delete specific rows from a table (with WHERE clause)
 
-## **1. INSERT**
-- used to insert new rows in a table
+## **INSERT**
+- Used to insert new rows in a table
+- The order of inserting data must be the same as order of the columns present in a table
 
+### **Method 1 : Supply all the values**
+#### 🧾 Syntax:
+```sql
+INSERT INTO <TABLE>
+VALUES ( VALUE1, VALUE2,...)
+-- In case I only have a few values then I will mention other values as 'NUll'
+```
 
+#### 📌 Example:
+```sql
+INSERT INTO EMP_001
+VALUES ('A1101','ABCD',1000,'01-JAN-2024','HR','A@GMAIL.COM',98121*****)
 
+INSERT INTO EMP_001
+VALUES ('A1101','ABCD',1000,'NUll','NUll','NUll','NUll')
+```
 
+### **Method 2 : Supply columns for which we are inserting the values**
+- Rest of the values will be 'NULL' by default
+#### 🧾 Syntax:
+```sql
+INSERT INTO <TABLE>(<COL 1>, <COL 2>, ... ,<COL n>)
+VALUES ( VALUE1, VALUE2,...,VALUEN),
+```
 
+#### 📌 Example:
+```sql
+INSERT INTO EMP_001(EMPID, ENAME)
+VALUES ('A1104','PQRS')
+```
 
+### **Method 3 : Enter Multiple Records**
+#### 🧾 Syntax:
+```sql
+INSERT INTO <TABLE>(<COL 1>, <COL 2>, ... ,<COL n>)
+VALUES ( VALUE1, VALUE2,...,VALUEN),
+VALUES ( VALUE1, VALUE2,...,VALUEN),
+...
+VALUES ( VALUE1, VALUE2,...,VALUEN)
+```
+
+#### 📌 Example:
+```sql
+INSERT INTO EMP_001(EMPID, ENAME)
+VALUES ('A1104','PQRS')
+VALUES ('A1105','QWER')
+VALUES ('A1106','A')
+```
+## **DELETE**
+- Delete all the records, or specified records
+### 🧾 Syntax:
+```sql
+-- all records
+DELETE FROM <TABLE>
+
+-- delete specified records
+DELETE FROM <TABLE> WHERE <CONDITION>
+```
+
+### 📌 Example:
+```sql
+-- all records
+DELETE FROM EMP_001
+
+-- delete specified records
+DELETE FROM EMP_001 WHERE EMPID = 'A1106'
+```
+
+## **UPDATE**
+- Update existing records
+### 🧾 Syntax:
+```sql
+-- all records
+UPDATE <TABLE> SET <COL> = <VALUE>
+
+-- UPDATE specified records
+UPDATE <TABLE> SET <COL> = <VALUE>
+WHERE <CONDITION>
+```
+
+### 📌 Example:
+```sql
+-- all records
+UPDATE EMP_001 SET SAL = 25000
+
+-- UPDATE specified records
+UPDATE EMP_001 SET SAL = 25000
+WHERE EMPID = 'B1101'
+```
+
+---
+
+# **CONSTRAINTS**
 
 
 
