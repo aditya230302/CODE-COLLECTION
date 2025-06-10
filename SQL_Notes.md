@@ -1062,12 +1062,103 @@ WHERE EMPID = 'B1101'
 ---
 
 # **CONSTRAINTS**
+- Rules on columns in a table.
+- Examples : no duplicates, salary>=25000, date between 1st Jan 2025 to 31st Dec 2025, Ename should not appect null values.
+- For Every rulw there is a key word that we need to apply.
+- list of constraints:
+  - **NOT NULL**
+  - **UNIQUE**
+  - **PRIMARY KEY**
+  - **FOREIGN KEY**
+  - **DEFAULT**
+  - **CHECK**
 
+## **UNIQUE**
+- No duplicates allowed in a column.
+```sql
+CREATE TABLE Users (
+                    Email VARCHAR(255) UNIQUE
+                   );
+```
 
+## **NOT NULL**
+- Null Values are not allowed in a column
+```sql
+CREATE TABLE Student (
+                      StudentID  INT           NOT NULL,
+                      Name       VARCHAR(100)  NOT NULL
+                     );
+```
 
+## **NOT NULL + UNIQUE**
+```sql
+CREATE TABLE Student (
+                      ID         INT           NOT NULL  UNIQUE,
+                      Name       VARCHAR(100)  NOT NULL
+                     );
+```
 
+## **CHECK**
+- Condition based on validation.
+```sql
+CREATE TABLE Accounts (
+                       AccID     INT              PRIMARY KEY,
+                       Balance   DECIMAL(10, 2)   CHECK (Balance >= 0)
+                      );
+```
 
+## **PRIMARY KEY**
+- When applied on column, column should not accept null and duplicate values i.e. NOT NULL + UNIQUE
+- Only 1 Primary key per table.
+```sql
+CREATE TABLE Employees (
+                        EmpID   INT           PRIMARY KEY,
+                        Name    VARCHAR(100)
+                       );
+```
+## **FOREIGN KEY**
+- It is the refrence to a column in another table (Primary key)
+- While adding values in foreign key column make sure that the same value exists in primary key column.
+- It accepts a duplicate value
+```sql
+CREATE TABLE Departments (
+                          DeptID     INT           PRIMARY KEY,
+                          DeptName   VARCHAR(100)
+                         );
 
+CREATE TABLE Employees (
+                        EmpID      INT             PRIMARY KEY,
+                        Name       VARCHAR(100),
+                        DeptID     INT,
+                        FOREIGN KEY (DeptID) REFERENCES Departments(DeptID)
+                       );
+-- OR
+CREATE TABLE Employees (
+                        EmpID      INT             PRIMARY KEY,
+                        Name       VARCHAR(100),
+                        DeptID     INT             FOREIGN KEY REFERENCES Departments(DeptID)
+                       );
+```
+
+## **DEFAULT**
+- When mention what default value needs to be taken instead of null values.
+```sql
+CREATE TABLE Orders (
+                     OrderID   INT           PRIMARY KEY,
+                     Status    VARCHAR(20)   DEFAULT 'Pending'
+                    );
+```
+
+## 🧱 **You can also add constraints to an existing table:**
+```sql
+-- Add a UNIQUE constraint
+ALTER TABLE Users
+ADD CONSTRAINT uc_email UNIQUE (Email);
+
+-- Add a FOREIGN KEY
+ALTER TABLE Employees
+ADD CONSTRAINT fk_dept FOREIGN KEY (DeptID) REFERENCES Departments(DeptID);
+```
 
 
 
