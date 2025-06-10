@@ -622,6 +622,16 @@ FROM SALESORDER
 GROUP BY ROLLUP(REGION)
 ```
 
+## **ISNULL function**
+- used to replace null values in a specified column with specified value
+- In DB calculation of anyvalue with 'NULL' is equal to 'NULL' only.
+- `COALESCE` will do the same but we generally use that on text column, `ISNULL` is generally used on numerical value.
+### 📌 Example:
+```sql
+SELECT *, SAL + ISNULL(COMM,0) AS TOTAL_SALES
+FROM EMP
+```
+
 ---
 
 # **JOINS**
@@ -719,6 +729,25 @@ ON E.DeptID = D.DeptID;
 ```
 > ✅ Includes all employees and all departments — even unmatched ones.
 
+## **SELF JOIN**
+- A table that joins to itself.
+
+### 🧾 Syntax:
+```sql
+SELECT a.column1, b.column2
+FROM TableA a
+INNER JOIN TableA b
+ON a.common_column = b.common_column;
+```
+
+### 📌 Example:
+```sql
+SELECT *
+FROM EMP A
+INNER JOIN EMP B
+ON A.MGR = B.MGR;
+```
+
 ## **How to Join Multiple Tables**
 ```sql
 SELECT * FROM EMP A
@@ -728,14 +757,59 @@ INNER JOIN PRODUCT P
 ON P.DEPTNO = B.DEPTNO
 ```
 ---
+
 # **SQL SET OPERATORS**
-## **UNION**
+* Combine results from two or more `SELECT` statements.
+* **Types of set operators in SQL:**
+  * **`UNION`**    : Appends without repetition (removes duplicates).
+  * **`UNION ALL`** : Appends all rows (includes duplicates).
+  * **`INTERSECT`** : Returns only the **common** records.
+  * **`EXCEPT`**   : Returns records from the **first query only**, that are not in the second.
 
-## **UNION ALL**
+---
 
-## **INTERSECT**
+## ✅ **Conditions**
+* The **number of columns** in both queries must be **equal**.
+* The **data types** of corresponding columns must be **compatible**.
+* **Column names** in the result set are taken from the **first query**.
 
-## **EXCEPT**
+---
+
+## 🔹 **UNION**
+- Removes duplicates between results from both queries.
+### 📌 Example:
+```sql
+SELECT * FROM EMP WHERE DEPTNO = 10
+UNION
+SELECT * FROM EMP WHERE JOB = 'CLERK';
+```
+
+## 🔹 **UNION ALL**
+- Includes **all rows**, even duplicates.
+### 📌 Example:
+```sql
+SELECT * FROM EMP WHERE DEPTNO = 10
+UNION ALL
+SELECT * FROM EMP WHERE JOB = 'CLERK';
+```
+
+## 🔹 **INTERSECT**
+- Returns **only the common rows** between the two queries.
+### 📌 Example:
+```sql
+SELECT * FROM EMP WHERE DEPTNO = 10
+INTERSECT
+SELECT * FROM EMP WHERE JOB = 'CLERK';
+```
+
+## 🔹 **EXCEPT**
+- Returns rows from the **first query** that are **not present** in the second.
+### 📌 Example:
+```sql
+SELECT * FROM EMP WHERE DEPTNO = 10
+EXCEPT
+SELECT * FROM EMP WHERE JOB = 'CLERK';
+```
 
 ---
 # **SQL Data Types**
@@ -1075,6 +1149,7 @@ WHERE EMPID = 'B1101'
 
 ## **UNIQUE**
 - No duplicates allowed in a column.
+### 🧾 Syntax:
 ```sql
 CREATE TABLE Users (
                     Email VARCHAR(255) UNIQUE
@@ -1083,6 +1158,7 @@ CREATE TABLE Users (
 
 ## **NOT NULL**
 - Null Values are not allowed in a column
+### 🧾 Syntax:
 ```sql
 CREATE TABLE Student (
                       StudentID  INT           NOT NULL,
@@ -1091,6 +1167,7 @@ CREATE TABLE Student (
 ```
 
 ## **NOT NULL + UNIQUE**
+### 🧾 Syntax:
 ```sql
 CREATE TABLE Student (
                       ID         INT           NOT NULL  UNIQUE,
@@ -1100,6 +1177,7 @@ CREATE TABLE Student (
 
 ## **CHECK**
 - Condition based on validation.
+### 🧾 Syntax:
 ```sql
 CREATE TABLE Accounts (
                        AccID     INT              PRIMARY KEY,
@@ -1110,6 +1188,7 @@ CREATE TABLE Accounts (
 ## **PRIMARY KEY**
 - When applied on column, column should not accept null and duplicate values i.e. NOT NULL + UNIQUE
 - Only 1 Primary key per table.
+### 🧾 Syntax:
 ```sql
 CREATE TABLE Employees (
                         EmpID   INT           PRIMARY KEY,
@@ -1120,6 +1199,7 @@ CREATE TABLE Employees (
 - It is the refrence to a column in another table (Primary key)
 - While adding values in foreign key column make sure that the same value exists in primary key column.
 - It accepts a duplicate value
+### 🧾 Syntax:
 ```sql
 CREATE TABLE Departments (
                           DeptID     INT           PRIMARY KEY,
@@ -1142,6 +1222,7 @@ CREATE TABLE Employees (
 
 ## **DEFAULT**
 - When mention what default value needs to be taken instead of null values.
+### 🧾 Syntax:
 ```sql
 CREATE TABLE Orders (
                      OrderID   INT           PRIMARY KEY,
@@ -1149,7 +1230,8 @@ CREATE TABLE Orders (
                     );
 ```
 
-## 🧱 **You can also add constraints to an existing table:**
+## 🧱 **Add constraints to an existing table:**
+### 🧾 Syntax:
 ```sql
 -- Add a UNIQUE constraint
 ALTER TABLE Users
@@ -1159,6 +1241,125 @@ ADD CONSTRAINT uc_email UNIQUE (Email);
 ALTER TABLE Employees
 ADD CONSTRAINT fk_dept FOREIGN KEY (DeptID) REFERENCES Departments(DeptID);
 ```
+
+## **View Constraints available on a Table**
+### 🧾 Syntax:
+```sql
+SP_HELP <Table Name>
+-- In this see at bottom
+-- Here we can see the name of the constraint
+```
+
+## **Drop Constraints**
+### 🧾 Syntax:
+```sql
+ALTER TABLE <TABLE NAME> DROP CONSTRAINT <CONSTRAINT NAME>
+
+-- EXAMPLE :
+ALTER TABLE CS_002 DROP CONSTRAINT UQ_CS_002_B87DC94ADIF4B2E9
+```
+
+## ✅ Applying Constraints on a Group of Columns
+
+### **1. Composite `PRIMARY KEY`**
+- Used when a combination of two or more columns **uniquely identifies each row**.
+#### 🧾 Syntax:
+```sql
+CREATE TABLE Enrollment (
+  StudentID INT,
+  CourseID INT,
+  EnrollmentDate DATE,
+  PRIMARY KEY (StudentID, CourseID)
+);
+```
+
+✅ This ensures:
+
+* Each `StudentID` can enroll in multiple courses.
+* Each `CourseID` can be taken by multiple students.
+* But a student **cannot enroll in the same course twice**.
+
+### **2. Composite `UNIQUE` Constraint**
+- Used when a **combination of columns** must be **unique**, but not necessarily the primary key.
+#### 🧾 Syntax:
+```sql
+CREATE TABLE EmployeeContacts (
+  EmpID INT,
+  ContactType VARCHAR(50),
+  ContactValue VARCHAR(100),
+  CONSTRAINT uc_emp_contact UNIQUE (EmpID, ContactType)
+);
+```
+
+✅ This ensures:
+
+* An employee (`EmpID`) can have multiple contacts (email, phone, etc.).
+* But **each contact type is unique per employee**.
+
+### 🧱 Adding Multi-Column Constraint to an Existing Table
+
+#### Composite UNIQUE (example):
+```sql
+ALTER TABLE EmployeeContacts
+ADD CONSTRAINT uc_emp_contact UNIQUE (EmpID, ContactType);
+```
+
+#### Composite PRIMARY KEY (example):
+```sql
+ALTER TABLE Enrollment
+ADD CONSTRAINT pk_enrollment PRIMARY KEY (StudentID, CourseID);
+```
+## ⚠️ Notes:
+* Composite `PRIMARY KEY` **automatically sets** `NOT NULL` on the columns involved.
+* Composite `UNIQUE` **does not set `NOT NULL`**, so you can have one `NULL` per column combination unless explicitly disallowed.
+* You **cannot use the same column in multiple `PRIMARY KEY` constraints**.
+
+---
+
+# **TCL (TRANSACTION CONTROL LANGUAGE)**
+- Used to manage transactions (group of SQL operations).
+- **BEGIN TRANSACTION** : Starts a new transaction block.
+- **COMMIT**            : Permanently saves all changes made during the transaction, send to server/finalize
+- **ROLLBACK**          : Undoes changes since the last COMMIT.
+- **SAVE**              :	Sets a point in a transaction to which you can roll back to later.
+
+## 📌**EXAMPLE 1**
+```SQL
+BEGIN TRANSACTION -- Select and execute only one time
+DELETE FROM Emp
+SELECT * FROM Emp
+ROLLBACK TRANSACTION -- If there are no check-point then it will revert the changes and END Transaction
+```
+
+## 📌**EXAMPLE 2**
+```SQL
+BEGIN TRANSACTION 
+DELETE FROM Emp WHERE EmpNo = 8888
+SAVE TRANSACTION A1 -- Creates a checkpoint
+UPDATE Emp SET Salary = 20000
+SAVE TRANSACTION A2
+ROLLBACK TRANSACTION A1 -- Removes changes after A1
+COMMIT TRANSACTION -- After commit we can't rollback
+ROLLBACK TRANSACTION -- This rollback request won't work as transaction is already commited, so there are no open transactions
+```
+
+--- 
+
+# **CTE (COMMON TABLE EXPRESSION)**
+- We can use one select statement in other select statement normally.
+- So we will store the result of the query in a 'with' statement.
+- a `WITH` statement is used to store the result of a query and work on columns created in it (in runtime).
+- we have to select the query from  `with` to `input` to `output` all at one, we can't execute it individually.
+- It creates a temporary table -> gives output -> table is destroyed
+
+## 📌 Example:
+```sql
+WITH AB -- ANY TEMP NAME [TEMP RECORD SET]
+AS
+(SELECT *, SAL*12 AS ANNUAL_SAL FROM EMP) -- INPUT
+SELECT * FROM AB WHERE ANNUAL_SAL > 30000 -- OUTPUT
+```
+
 
 
 
