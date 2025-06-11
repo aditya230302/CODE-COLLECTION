@@ -863,6 +863,7 @@ FROM Employee_Table;
 ```sql
 LAG(column, offset, default) OVER (ORDER BY column)
 LEAD(column, offset, default) OVER (ORDER BY column)
+-- default_value: (optional) value to return when the offset goes out of bounds (default is NULL).
 ```
 
 ### 📌 Example:
@@ -876,7 +877,7 @@ SELECT
 FROM Employee_Table;
 ```
 
-## 🧮 **4. FIRST\_VALUE() & LAST\_VALUE()**
+## 🧮 **4. FIRST_VALUE() & LAST_VALUE()**
 * Return the **first or last value** in a window frame.
 
 ### ✅ Syntax:
@@ -949,6 +950,312 @@ SELECT
     AVG(Salary) OVER (PARTITION BY Department) AS DeptAvg,
     MIN(Salary) OVER (PARTITION BY Department) AS DeptMin,
     MAX(Salary) OVER (PARTITION BY Department) AS DeptMax
+
+FROM Employee_Table;
+```
+
+---
+
+# 📝 **SQL Server TEXT FUNCTIONS**
+
+## ✂️ **1. LEN()**
+* Returns the **length of a string** (excluding trailing spaces).
+
+### ✅ Syntax:
+```sql
+SELECT LEN(column_name) FROM <table>;
+```
+
+### 📌 Example:
+```sql
+SELECT LEN('SQL Server') AS LengthOfString;
+-- Output: 10
+```
+
+## 🔠 **2. UPPER() and LOWER()**
+* **UPPER()** converts text to **uppercase**.
+* **LOWER()** converts text to **lowercase**.
+
+### 📌 Example:
+```sql
+SELECT 
+    UPPER('sql server') AS UpperCaseText,
+    LOWER('SQL SERVER') AS LowerCaseText;
+```
+
+## 🔍 **3. CHARINDEX()**
+* Returns the **starting position** of a substring inside a string.
+
+### ✅ Syntax:
+```sql
+CHARINDEX('substring', 'main_string')
+```
+
+### 📌 Example:
+```sql
+SELECT CHARINDEX('Server', 'SQL Server') AS Position;
+-- Output: 5
+```
+
+## 🧬 **4. SUBSTRING()**
+* Extracts a **portion** of a string.
+
+### ✅ Syntax:
+```sql
+SUBSTRING(string, start_position, length)
+```
+
+### 📌 Example:
+```sql
+SELECT SUBSTRING('SQL Server 2025', 5, 6) AS SubPart;
+-- Output: Server
+```
+
+## 🔗 **5. CONCAT()**
+* Combines multiple strings into one.
+
+### 📌 Example:
+```sql
+SELECT CONCAT('SQL', ' ', 'Server') AS FullText;
+-- Output: SQL Server
+```
+
+## 🧹 **6. LTRIM() & RTRIM()**
+* **LTRIM()** removes leading spaces.
+* **RTRIM()** removes trailing spaces.
+
+### 📌 Example:
+```sql
+SELECT 
+    LTRIM('   Hello') AS LeftTrimmed,
+    RTRIM('World   ') AS RightTrimmed;
+```
+
+## 🧱 **7. REPLACE()**
+* Replaces all occurrences of a substring.
+
+### ✅ Syntax:
+```sql
+REPLACE('original_string', 'search_string', 'replace_string')
+```
+
+### 📌 Example:
+```sql
+SELECT REPLACE('SQL 2019', '2019', '2025') AS NewVersion;
+-- Output: SQL 2025
+```
+
+## 🔣 **8. LEFT() and RIGHT()**
+* Extracts a specified number of characters from the **left** or **right**.
+
+### 📌 Example:
+```sql
+SELECT 
+    LEFT('SQLServer', 3) AS LeftPart,    -- Output: SQL
+    RIGHT('SQLServer', 6) AS RightPart;  -- Output: Server
+```
+
+## 🧠 **9. ASCII() and CHAR()**
+* `ASCII()` returns the **ASCII code** of the first character.
+* `CHAR()` returns the **character** from an ASCII code.
+
+### 📌 Example:
+```sql
+SELECT 
+    ASCII('A') AS AsciiValue,   -- Output: 65
+    CHAR(66) AS CharFromAscii;  -- Output: B
+```
+
+---
+
+## 🧮 **10. REPLICATE()**
+* Repeats a string a given number of times.
+
+### 📌 Example:
+```sql
+SELECT REPLICATE('*', 5) AS Stars;
+-- Output: *****
+```
+
+---
+
+## 📌 **All Common String Functions Together in One Query**
+```sql
+SELECT 
+    ' SQL Server 2025 ' AS OriginalText,
+
+    LEN(' SQL Server 2025 ') AS Length,
+    UPPER('sql server') AS UpperText,
+    LOWER('SQL SERVER') AS LowerText,
+    CHARINDEX('Server', 'SQL Server 2025') AS ServerPosition,
+    SUBSTRING('SQL Server 2025', 5, 6) AS ExtractedWord,
+    CONCAT('SQL', ' ', 'Server') AS CombinedText,
+    LTRIM('   Hello') AS LTrimmed,
+    RTRIM('World   ') AS RTrimmed,
+    REPLACE('SQL 2019', '2019', '2025') AS ReplacedText,
+    LEFT('SQLServer', 3) AS LeftSide,
+    RIGHT('SQLServer', 6) AS RightSide,
+    ASCII('A') AS AsciiCode,
+    CHAR(66) AS CharFromAscii,
+    REPLICATE('*', 5) AS StarsRepeated;
+```
+
+---
+
+# 🧮 **SQL Server MATH FUNCTIONS**
+
+## ➕ **1. ABS()**
+* Returns the **absolute value**.
+
+### ✅ Syntax:
+```sql
+SELECT ABS(-25) AS AbsoluteValue;
+-- Output: 25
+```
+
+## 🔢 **2. CEILING() and FLOOR()**
+* **CEILING()**: Rounds **up** to the nearest integer.
+* **FLOOR()**: Rounds **down** to the nearest integer.
+
+### 📌 Example:
+```sql
+SELECT 
+    CEILING(12.3) AS RoundUp,   -- Output: 13
+    FLOOR(12.7) AS RoundDown;   -- Output: 12
+```
+
+## ⌛ **3. ROUND()**
+* Rounds to the specified number of decimal places.
+
+### ✅ Syntax:
+```sql
+ROUND(number, decimal_places)
+```
+
+### 📌 Example:
+```sql
+SELECT ROUND(123.4567, 2) AS RoundedVal;
+-- Output: 123.46
+```
+
+## 🧠 **4. POWER() and SQRT()**
+* **POWER(x, y)**: x to the power y.
+* **SQRT()**: Square root.
+
+### 📌 Example:
+```sql
+SELECT 
+    POWER(2, 4) AS PowerValue,     -- Output: 16
+    SQRT(49) AS SquareRootValue;   -- Output: 7
+```
+
+## 💯 **5. PI(), EXP(), LOG(), LOG10()**
+* **PI()**: Returns π.
+* **EXP(x)**: e to the power of x.
+* **LOG(x)**: Natural logarithm.
+* **LOG10(x)**: Base-10 logarithm.
+
+### 📌 Example:
+```sql
+SELECT 
+    PI() AS PiValue,
+    EXP(1) AS Exponential,
+    LOG(10) AS NaturalLog,
+    LOG10(100) AS LogBase10;
+```
+
+## 📌 **All Common Math Functions Together in One Query**
+```sql
+SELECT 
+    ABS(-10) AS AbsoluteVal,
+    CEILING(12.3) AS CeilingVal,
+    FLOOR(12.7) AS FloorVal,
+    ROUND(123.4567, 2) AS RoundedVal,
+    POWER(3, 2) AS PowerVal,
+    SQRT(81) AS SqrtVal,
+    PI() AS PiValue,
+    EXP(1) AS ExpVal,
+    LOG(10) AS NaturalLog,
+    LOG10(100) AS LogBase10;
+```
+
+---
+
+# 🧾 **SQL Server CONDITIONAL FUNCTIONS**
+
+## 📍 **1. CASE WHEN**
+* Acts like an **IF-THEN-ELSE** statement.
+
+### ✅ Syntax:
+```sql
+CASE 
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    ELSE default_result
+END
+```
+
+### 📌 Example:
+```sql
+SELECT 
+    Salary,
+    CASE 
+        WHEN Salary >= 80000 THEN 'High'
+        WHEN Salary >= 50000 THEN 'Medium'
+        ELSE 'Low'
+    END AS SalaryLevel
+FROM Employee_Table;
+```
+
+## 🧮 **2. IIF()**
+* Shorter version of `CASE`; works like a single-line IF.
+
+### ✅ Syntax:
+```sql
+IIF(condition, true_value, false_value)
+```
+
+### 📌 Example:
+```sql
+SELECT 
+    Salary,
+    IIF(Salary > 60000, 'Eligible', 'Not Eligible') AS BonusStatus
+FROM Employee_Table;
+
+-- multiple IIFs
+SELECT 
+    Salary,
+    IIF(Salary > 60000, 'Grade A', IIF(Salary > 30000, 'GRade B', 'Grade C')) AS GRADES
+FROM Employee_Table;
+```
+
+## 🧠 **3. NULLIF()**
+* Returns **NULL** if two expressions are equal; else returns the first expression.
+
+### 📌 Example:
+```sql
+SELECT NULLIF(100, 100) AS Result;  -- Output: NULL
+SELECT NULLIF(100, 200) AS Result;  -- Output: 100
+```
+
+## 📌 **All Common Conditional Functions Together in One Query**
+```sql
+SELECT 
+    EmployeeID,
+    Salary,
+
+    -- CASE for salary levels
+    CASE 
+        WHEN Salary >= 80000 THEN 'High'
+        WHEN Salary >= 50000 THEN 'Medium'
+        ELSE 'Low'
+    END AS SalaryLevel,
+
+    -- IIF for bonus eligibility
+    IIF(Salary >= 60000, 'Eligible', 'Not Eligible') AS BonusStatus,
+
+    -- NULLIF example
+    NULLIF(Salary, 0) AS NullIfSalaryZero,
 
 FROM Employee_Table;
 ```
@@ -1706,6 +2013,20 @@ SELECT A.Ename, B.Dname FROM #AB1
 
 ## **Global Temp Tables**
 - Any temp table created with double `#` (i.e. `##`) before table name are accessible across all sessions till the session is active.
+
+### 📌 Example:
+```sql
+SELECT * INTO ##AB1 -- SYNTAX
+FROM ( SELECT A.Ename, B.Dname
+       FROM Emp A
+       LEFT JOIN Dept B
+       ON A.Deptno = B.Deptno
+     ) ABCD -- ALIAS NAME MUST BE GIVEN
+
+SELECT A.Ename, B.Dname FROM #AB1
+```
+
+---
 
 
 
