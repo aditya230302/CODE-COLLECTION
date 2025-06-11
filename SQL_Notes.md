@@ -1384,6 +1384,30 @@ ON A.EMPID = B.EMPID
 INNER JOIN PRODUCT P
 ON P.DEPTNO = B.DEPTNO
 ```
+
+## **UPDATE JOIN**
+- It will update values from table A to table B, which satisfy join consition
+- INNER join only
+
+### 📌 Example:
+```SQL
+UPDATE Emp
+SET Emp.Salary = Emp_New.Salary,
+    Emp.Job = Emp_New.Job
+FROM Emp_New
+INNER JOIN Emp
+ON Emp_New.IDNO = Emp.EmpNo
+```
+
+## **MERGE JOIN**
+- It will update if data is present in records and add data to records if not present.
+
+### 📌 Example:
+```SQL
+
+```
+
+
 ---
 
 # **SQL SET OPERATORS**
@@ -2028,7 +2052,26 @@ SELECT A.Ename, B.Dname FROM #AB1
 
 ---
 
+# **VIEWS**
+- An alias name for the query
+- View is not a table
+- The query will be stored in it.
+- Views don'r store the result of the query.
+- Views are parmanent like tables.
 
+### 📌 Example:
+```sql
+CREATE VIEW VW_001 as -- VM_001 is view name
+SELECT * FROM Emp
+
+SELECT * FROM VM_001
+DROP VIEW VM_001  -- TO DROP VIEW
+SP_HELPTEXT VM_001  -- SHOWS THE QUERY STORED IN IT
+
+-- We will give view name to the user,
+-- and user can write query using it
+-- and the query stored in views will be executed, we do this security reasons
+```
 
 
 
