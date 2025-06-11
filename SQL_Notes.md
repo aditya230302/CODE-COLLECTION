@@ -800,7 +800,24 @@ SELECT
 
 FROM Employee_Table;
 ```
-- Sample Output:
+
+### 📌 Example:
+```sql
+SELECT 
+    EmployeeID,
+    EmployeeName,
+    Department,
+    Salary,
+
+    ROW_NUMBER() OVER (PARTITION BY Department ORDER BY Salary DESC) AS RowNum,
+    RANK() OVER (PARTITION BY Department ORDER BY Salary DESC) AS RankVal,
+    DENSE_RANK() OVER (PARTITION BY Department ORDER BY Salary DESC) AS DenseRankVal
+
+FROM Employee_Table;
+```
+
+- 🧪 Sample Output:
+
 | EmployeeID | Department | Salary | RowNum | RankVal | DenseRankVal |
 | ---------- | ---------- | ------ | ------ | ------- | ------------ |
 | 101        | IT         | 90000  | 1      | 1       | 1            |
@@ -808,6 +825,14 @@ FROM Employee_Table;
 | 103        | IT         | 85000  | 3      | 3       | 2            |
 | 104        | HR         | 75000  | 1      | 1       | 1            |
 | 105        | HR         | 70000  | 2      | 2       | 2            |
+
+- 🔍 What each function does:
+
+| Function       | Behavior                                                           |
+| -------------- | ------------------------------------------------------------------ |
+| `ROW_NUMBER()` | Gives a unique row number regardless of ties.                      |
+| `RANK()`       | Gives same rank for ties, **but skips numbers** (gaps).            |
+| `DENSE_RANK()` | Gives same rank for ties, **but does not skip numbers** (no gaps). |
 
 ## 🔢 **2. NTILE()**
 * **NTILE(n)**: Divides rows into `n` buckets (quantiles).
