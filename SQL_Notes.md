@@ -593,27 +593,28 @@ SELECT Job, COUNT(*)
 FROM Employee_Table
 GROUP BY Job;
 ```
-## **ROLLUP function**
+---
+# **ROLLUP function**
 - it extends the functionality of group by.
 - adds a row to the group by output.
 - when applied on 1 column only adds `grand total` i.e `1 row`
 - when applied on more than 1 column adds `grand total` according to first column and `subtotals` according to 2nd column (and so on for further columns)
 
-### 🧾 Syntax:
+## 🧾 Syntax:
 ```sql
 group by Rollup(<col name>) -- must be in paranthesis
 ```
-
-## **COALESCE function**
+---
+# **COALESCE function**
 - it replaces null value in the specified column with the specified value
 
-  ### 🧾 Syntax:
+## 🧾 Syntax:
 ```sql
 select COALESCE(<col name>, <value>) as <col name>,
 from table
 ```
 
-### 📌 Example:
+## 📌 Example:
 ```sql
 -- ADD another row with null as index and null values as data which will be replaced by 'Grand Total' due to colaesce
 SELECT COALESCE(REGION, 'GRAND TOTAL') AS REGION
@@ -621,15 +622,310 @@ FROM SUM(SALES) AS 'TOTAL SALES' -- USE ' ' FOR SPACE OR SPECIAL CHARACTERS
 FROM SALESORDER
 GROUP BY ROLLUP(REGION)
 ```
-
-## **ISNULL function**
+---
+# **ISNULL function**
 - used to replace null values in a specified column with specified value
 - In DB calculation of anyvalue with 'NULL' is equal to 'NULL' only.
 - `COALESCE` will do the same but we generally use that on text column, `ISNULL` is generally used on numerical value.
-### 📌 Example:
+## 📌 Example:
 ```sql
 SELECT *, SAL + ISNULL(COMM,0) AS TOTAL_SALES
 FROM EMP
+```
+---
+
+# 🕓 **DATE AND TIME FUNCTIONS**
+- Date components : **Day**. **Month**, **Year**, **Quarter**, **Weekday**, **Weeknum**
+- Time Components : **Hours**, **Minutes**, **Seconds**, **Milisec**, **Timezone**
+
+## 📅 **1. DATEPART()**
+* Returns an **integer** representing the specified part of a date (e.g., year, month, day, hour).
+
+### ✅ Syntax:
+```sql
+SELECT DATEPART(part, date_value);
+```
+
+### 📌 Example:
+```sql
+SELECT 
+    DATEPART(YEAR, '2025-06-11 14:35:25.123') AS YearPart,
+    DATEPART(QUARTER, '2025-06-11 14:35:25.123') AS QuarterPart,
+    DATEPART(MONTH, '2025-06-11 14:35:25.123') AS MonthPart,
+    DATEPART(DAY, '2025-06-11 14:35:25.123') AS DayPart,
+    DATEPART(WEEK, '2025-06-11 14:35:25.123') AS WeekPart,
+    DATEPART(WEEKDAY, '2025-06-11 14:35:25.123') AS WeekdayPart,
+    DATEPART(HOUR, '2025-06-11 14:35:25.123') AS HourPart,
+    DATEPART(MINUTE, '2025-06-11 14:35:25.123') AS MinutePart,
+    DATEPART(SECOND, '2025-06-11 14:35:25.123') AS SecondPart,
+    DATEPART(MILLISECOND, '2025-06-11 14:35:25.123') AS MillisecondPart;
+```
+- Common parts:
+  * `YEAR`, `QUARTER`, `MONTH`, `DAY`, `WEEK`, `WEEKDAY`
+  * `HOUR`, `MINUTE`, `SECOND`, `MILLISECOND`
+
+## 🗓 **2. DATENAME()**
+* Returns the **string name** of the specified part of a date.
+
+### ✅ Syntax:
+```sql
+SELECT DATENAME(part, date_value);
+```
+
+### 📌 Example:
+```sql
+SELECT 
+    DATENAME(MONTH, '2025-06-11 14:35:25.123') AS MonthName,
+    DATENAME(WEEKDAY, '2025-06-11 14:35:25.123') AS WeekdayName,
+```
+- DATENAME() returns strings, e.g., 'June', 'Wednesday', not numbers.
+- only for Month and Weekday if used on other parts then it will work like DATEPART
+- Common parts:
+  * `MONTH` returns 'June'
+  * `WEEKDAY` returns 'Wednesday'
+
+## ⏳ **3. DATEDIFF()**
+* Returns the **difference between two dates** in the specified unit.
+
+### ✅ Syntax:
+```sql
+SELECT DATEDIFF(part, start_date, end_date);
+```
+
+### 📌 Example:
+```sql
+SELECT 
+    DATEDIFF(YEAR, '2022-01-01', '2025-06-11') AS YearDiff,
+    DATEDIFF(QUARTER, '2022-01-01', '2025-06-11') AS QuarterDiff,
+    DATEDIFF(MONTH, '2022-01-01', '2025-06-11') AS MonthDiff,
+    DATEDIFF(DAY, '2022-01-01', '2025-06-11') AS DayDiff,
+    DATEDIFF(WEEK, '2022-01-01', '2025-06-11') AS WeekDiff,
+    DATEDIFF(HOUR, '2022-01-01', '2025-06-11') AS HourDiff,
+    DATEDIFF(MINUTE, '2022-01-01', '2025-06-11') AS MinuteDiff,
+    DATEDIFF(SECOND, '2022-01-01', '2025-06-11') AS SecondDiff;
+```
+- `GetDate()`is a predefined function that will give current system date.
+
+## ➕ **4. DATEADD()**
+* Adds a specific number of units (e.g., days, months) to a date.
+
+### ✅ Syntax:
+```sql
+SELECT DATEADD(part, number, date_value);
+```
+
+### 📌 Example:
+```sql
+SELECT 
+    DATEADD(YEAR, 2, '2025-06-11') AS AddYear,
+    DATEADD(QUARTER, 1, '2025-06-11') AS AddQuarter,
+    DATEADD(MONTH, 3, '2025-06-11') AS AddMonth,
+    DATEADD(DAY, 10, '2025-06-11') AS AddDay,
+    DATEADD(WEEK, 2, '2025-06-11') AS AddWeek,
+    DATEADD(HOUR, 5, '2025-06-11 14:00:00') AS AddHour,
+    DATEADD(MINUTE, 30, '2025-06-11 14:00:00') AS AddMinute,
+    DATEADD(SECOND, 45, '2025-06-11 14:00:00') AS AddSecond;
+
+-- Adding multiples parts like day, month or year in one query
+SELECT DATEADD(MONTH, 2, DATEADD(DAY, 10, GETDATE())) AS NewDate
+```
+
+## 📆 **5. EOMONTH()**
+* Add months and Returns the **last day of the month** for a given date.
+
+### ✅ Syntax:
+```sql
+SELECT EOMONTH(date_value, no_of_months_to_add);
+```
+
+### 📌 Example:
+```sql
+SELECT EOMONTH('2025-06-11', 1) AS EndOfNextMonth;
+
+-- End of the month for a given date without adding months
+SELECT EOMONTH('2025-06-11') AS MonthEnd;
+
+- Multiple Use Cases in One Query
+SELECT 
+    EOMONTH('2025-06-11') AS EndOfCurrentMonth,
+    EOMONTH('2025-06-11', 1) AS EndOfNextMonth,
+    EOMONTH('2025-06-11', -1) AS EndOfPreviousMonth;
+```
+
+## 🌍 **6. SWITCHOFFSET()**
+* Adjusts a datetimeoffset value to a new time zone **offset**.
+
+### ✅ Syntax:
+```sql
+SELECT SWITCHOFFSET(datetimeoffset_value, timezone_offset);
+```
+
+### 📌 Example:
+```sql
+-- Change the timezone offset to +05:30 (IST)
+SELECT SWITCHOFFSET(SYSDATETIMEOFFSET(), '+05:30') AS IST_Time;
+```
+> Useful with `SYSDATETIMEOFFSET()` to work with multiple time zones.
+> `SYSDATETIMEOFFSET()` gives current date and time with timezone 
+
+---
+
+# 🪟 **SQL WINDOW FUNCTIONS**
+- Window functions **perform calculations across a set of table rows** related to the current row, **without collapsing rows** (unlike aggregate functions).
+
+## 🎯 **1. ROW_NUMBER(), RANK(), DENSE_RANK()**
+* **ROW_NUMBER()**  : Assigns a unique **sequential integer** to rows within a partition.
+* **RANK()**        : Leaves gaps in ranking if there are same values.
+* **DENSE\_RANK()** : No gaps.
+
+### ✅ Syntax:
+```sql
+SELECT ROW_NUMBER() OVER (PARTITION BY column ORDER BY column) AS RowNum
+RANK() OVER (PARTITION BY column ORDER BY column)
+DENSE_RANK() OVER (PARTITION BY column ORDER BY column)
+FROM <table>;
+```
+
+### 📌 Example:
+```sql
+SELECT 
+    EmployeeID,
+    EmployeeName,
+    Department,
+    Salary,
+
+    ROW_NUMBER() OVER (PARTITION BY Department ORDER BY Salary DESC) AS RowNum,
+    RANK() OVER (PARTITION BY Department ORDER BY Salary DESC) AS RankVal,
+    DENSE_RANK() OVER (PARTITION BY Department ORDER BY Salary DESC) AS DenseRankVal
+
+FROM Employee_Table;
+```
+- Sample Output:
+| EmployeeID | Department | Salary | RowNum | RankVal | DenseRankVal |
+| ---------- | ---------- | ------ | ------ | ------- | ------------ |
+| 101        | IT         | 90000  | 1      | 1       | 1            |
+| 102        | IT         | 90000  | 2      | 1       | 1            |
+| 103        | IT         | 85000  | 3      | 3       | 2            |
+| 104        | HR         | 75000  | 1      | 1       | 1            |
+| 105        | HR         | 70000  | 2      | 2       | 2            |
+
+## 🔢 **2. NTILE()**
+* **NTILE(n)**: Divides rows into `n` buckets (quantiles).
+
+### ✅ Syntax:
+```sql
+NTILE(n) OVER (PARTITION BY column ORDER BY column)
+```
+
+### 📌 Example:
+```sql
+-- Ranking and bucketing employees by salary in each department
+SELECT 
+    EmployeeID,
+    Department,
+    Salary,
+    RANK() OVER (PARTITION BY Department ORDER BY Salary DESC) AS RankNum,
+    DENSE_RANK() OVER (PARTITION BY Department ORDER BY Salary DESC) AS DenseRank,
+    NTILE(4) OVER (PARTITION BY Department ORDER BY Salary DESC) AS Quartile
+FROM Employee_Table;
+```
+
+## 📉 **3. LAG() & LEAD()**
+* **LAG()**: Get **previous row’s value**
+* **LEAD()**: Get **next row’s value**
+
+### ✅ Syntax:
+```sql
+LAG(column, offset, default) OVER (ORDER BY column)
+LEAD(column, offset, default) OVER (ORDER BY column)
+```
+
+### 📌 Example:
+```sql
+-- Compare current salary with previous and next
+SELECT 
+    EmployeeID,
+    Salary,
+    LAG(Salary, 1, 0) OVER (ORDER BY EmployeeID) AS PrevSalary,
+    LEAD(Salary, 1, 0) OVER (ORDER BY EmployeeID) AS NextSalary
+FROM Employee_Table;
+```
+
+## 🧮 **4. FIRST\_VALUE() & LAST\_VALUE()**
+* Return the **first or last value** in a window frame.
+
+### ✅ Syntax:
+```sql
+FIRST_VALUE(column) OVER (PARTITION BY column ORDER BY column)
+LAST_VALUE(column) OVER (PARTITION BY column ORDER BY column ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)
+```
+
+### 📌 Example:
+```sql
+-- Get first and last salary in each department
+SELECT 
+    EmployeeID,
+    Department,
+    Salary,
+    FIRST_VALUE(Salary) OVER (PARTITION BY Department ORDER BY Salary) AS FirstSal,
+    LAST_VALUE(Salary) OVER (
+        PARTITION BY Department 
+        ORDER BY Salary 
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+    ) AS LastSal
+FROM Employee_Table;
+```
+
+## 📊 **5. Aggregate Functions with OVER()**
+Use aggregate functions like `SUM()`, `AVG()`, `MIN()`, `MAX()` **without collapsing rows**.
+
+### ✅ Syntax:
+```sql
+SELECT SUM(column) OVER (PARTITION BY column) AS Total
+```
+
+### 📌 Example:
+```sql
+-- Total and average salary per department
+SELECT 
+    EmployeeID,
+    Department,
+    Salary,
+    SUM(Salary) OVER (PARTITION BY Department) AS DeptTotalSalary,
+    AVG(Salary) OVER (PARTITION BY Department) AS DeptAvgSalary,
+    MIN(Salary) OVER (PARTITION BY Department) AS DeptMinSalary,
+    MAX(Salary) OVER (PARTITION BY Department) AS DeptMaxSalary
+FROM Employee_Table;
+```
+
+## 📌 All in One Query (Ultimate Window Function Demo)
+
+```sql
+SELECT 
+    EmployeeID,
+    Department,
+    Salary,
+    
+    ROW_NUMBER() OVER (PARTITION BY Department ORDER BY Salary DESC) AS RowNum,
+    RANK() OVER (PARTITION BY Department ORDER BY Salary DESC) AS RankNum,
+    DENSE_RANK() OVER (PARTITION BY Department ORDER BY Salary DESC) AS DenseRank,
+    NTILE(4) OVER (PARTITION BY Department ORDER BY Salary DESC) AS Quartile,
+
+    LAG(Salary, 1, 0) OVER (PARTITION BY Department ORDER BY Salary DESC) AS PrevSalary,
+    LEAD(Salary, 1, 0) OVER (PARTITION BY Department ORDER BY Salary DESC) AS NextSalary,
+
+    FIRST_VALUE(Salary) OVER (PARTITION BY Department ORDER BY Salary ASC) AS FirstSal,
+    LAST_VALUE(Salary) OVER (
+        PARTITION BY Department ORDER BY Salary ASC 
+        ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+    ) AS LastSal,
+
+    SUM(Salary) OVER (PARTITION BY Department) AS DeptTotal,
+    AVG(Salary) OVER (PARTITION BY Department) AS DeptAvg,
+    MIN(Salary) OVER (PARTITION BY Department) AS DeptMin,
+    MAX(Salary) OVER (PARTITION BY Department) AS DeptMax
+
+FROM Employee_Table;
 ```
 
 ---
@@ -1359,6 +1655,32 @@ AS
 (SELECT *, SAL*12 AS ANNUAL_SAL FROM EMP) -- INPUT
 SELECT * FROM AB WHERE ANNUAL_SAL > 30000 -- OUTPUT
 ```
+
+---
+
+# **TEMPORARY TABLES**
+- Stores data temporarily.
+- Once we close the session, the temporary tables are destroyed.
+- Temp table must have `#` before their names.
+- All temp tables created are accessible only by the same user.
+
+## **Local Temp Tables**
+- Any temp table created with single `#` before table name are limited to that session only.
+
+### 📌 Example:
+```sql
+SELECT * INTO #AB1 -- SYNTAX
+FROM ( SELECT A.Ename, B.Dname
+       FROM Emp A
+       LEFT JOIN Dept B
+       ON A.Deptno = B.Deptno
+     ) ABCD -- ALIAS NAME MUST BE GIVEN
+
+SELECT A.Ename, B.Dname FROM #AB1
+```
+
+## **Global Temp Tables**
+- Any temp table created with double `#` (i.e. `##`) before table name are accessible across all sessions till the session is active.
 
 
 
