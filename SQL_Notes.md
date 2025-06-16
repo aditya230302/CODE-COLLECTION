@@ -1066,8 +1066,6 @@ SELECT
     CHAR(66) AS CharFromAscii;  -- Output: B
 ```
 
----
-
 ## 🧮 **10. REPLICATE()**
 * Repeats a string a given number of times.
 
@@ -1076,8 +1074,6 @@ SELECT
 SELECT REPLICATE('*', 5) AS Stars;
 -- Output: *****
 ```
-
----
 
 ## 📌 **All Common String Functions Together in One Query**
 ```sql
@@ -1404,9 +1400,17 @@ ON Emp_New.IDNO = Emp.EmpNo
 
 ### 📌 Example:
 ```SQL
-
+MERGE EMP AS TARGET
+USING EMP_NEW AS SOURCE
+ON TARGET.EMPNO = SOURCE.IDNO
+WHEN MATCHED THEN UPDATE
+SET TARGET.SAL = SOURCE.SAL,
+    TARGET.JOB = SOURCE.JOB
+WHEN NOT MATCHED BY TARGET THEN INSERT (EMPNO, SAL, JOB)
+VALUES (SOURCE.IDNO, SOURCE.SAL, SOURCE.JOB)
+WHEN NOT MATCHED BY SOURCE THEN DELETE:
 ```
-
+- Mention the table name in `WHEN NOT MATCHED`.
 
 ---
 
@@ -2059,13 +2063,15 @@ SELECT A.Ename, B.Dname FROM #AB1
 - Views don'r store the result of the query.
 - Views are parmanent like tables.
 
-### 📌 Example:
+## 📌 Example:
 ```sql
 CREATE VIEW VW_001 as -- VM_001 is view name
 SELECT * FROM Emp
 
 SELECT * FROM VM_001
+
 DROP VIEW VM_001  -- TO DROP VIEW
+
 SP_HELPTEXT VM_001  -- SHOWS THE QUERY STORED IN IT
 
 -- We will give view name to the user,
@@ -2073,7 +2079,302 @@ SP_HELPTEXT VM_001  -- SHOWS THE QUERY STORED IN IT
 -- and the query stored in views will be executed, we do this security reasons
 ```
 
+---
 
+# **STORED PROCEDURES (SP)**
+- Used for creating a batch of SQL statements.
+- SPs are used as backend of web/desktop applications.
+- SP can be reused for different inputs.
 
+## 🧾 Syntax:
+```sql
+CREATE PROCEDURE <PROCEDURE ANME>
+AS
+BEGIN
+...
+END
+
+-- FOR EXECUTING SP
+EXEC <SP NAME>
+
+-- TO DROP PROCEDURE
+DROP PROCEDURE <SP NAME>
+
+-- TO SEE CODE
+SP_HELPTEXT <SP NAME>
+```
+
+## 📌 Example:
+```SQL
+-- WRITE DOWN ADDITION/SUBTRACTION PROGRAM
+CREATE PROCEDURE ADDITION
+AS
+BEGIN
+  DECLARE @X INT = 100 -- `DECLARE` : TO DECLARE VARIABLES
+  DECLARE @Y INT = 300
+  PRINT @X + @Y        -- `PRINT` : TO PRINT
+  PRINT @X - @Y
+END
+
+EXEC ADDITION
+DROP PROCEDURE ADDITION
+
+-- CHECK FOR EMPNO. IF RECORD EXITS THEN DELETE ELSE PRINT 'NO RECORDS'
+CREATE PROCEDURE DELETE_RECORDS (@EMPNO INT) -- USER INPUT
+AS
+BEGIN
+  IF EXITS ( SELECT * FROM EMP
+             WHERE EMPNO = @EMPNO )
+    BEGIN                           -- IF MORE THAN 1 LINE PRESENT
+      DELETE FROM EMP WHERE WHERE EMPNO = @EMPNO
+    END
+  ELSE
+    PRINT 'NO RECORDS'
+END
+
+EXEC DELETE_RECORDS 1000 -- USER INPUT
+```
+
+---
+
+# **ERROR HANDLING**
+
+```SQL
+CREATE PROCEDURE PR_01 (@X INT, @Y VARCHAR(20), @Z INT)
+AS
+BEGIN
+  BEGIN TRY                                -- TRY START
+    INSERT INTO EMP(EMPNO, ENAME, DEPTNO)
+    VALUES (@X, @Y, @Z)
+  END TRY                                  -- TRY END
+  BEGIN CATCH                              -- CATCH START
+    PRINT ERROR_MESSAGE()  -- DISPLAY ERROR MESSAGE
+    PRINT ERROR_LINE()     -- DESPLAY ERROR LINE NO.
+  END CATCH                                -- CATCH END
+END
+
+EXEC PR_01 1111,'ABCD', 50
+```
+
+---
+
+# **TRIGGERS**
+- These are special sps executed automatically
+- It executes when user executes insert/ update/ delete statement
+- Triggers are used to monitor the activity in the log (update/ insert/ delete, etc.)
+- Special SPs are used to trigger email/messages if any changes happened to our DB table.
+- Triggers are permanent until deleted.
+- They are used for DML commands.
+
+## 🧾 Syntax:
+```sql
+CREATE TRIGGER <TRIGGER NAME> ON <TABLE NAME>
+FOR <DML COMMAND>
+AS
+BEGIN
+...
+END
+
+-- TO DROP TRIGGER
+DROP TRIGGER <TRIGGER ANME>
+
+-- TO SEE INFO ABOUT TRIGGER
+SELECT * FROM SYS.TRIGGERS
+
+-- TO SEE CODE
+SP_HELPTEXT <TRIGGER NAME>
+```
+
+## 📌 Example:
+```SQL
+-- CREATE A TRIGGER TO GIVE INSERTED RECORD IN A TABLE
+CREATE TRIGGER INSERT_LOG ON EMP
+FOR INSERT
+AS
+BEGIN
+  SELECT * FROM INSERTED -- IT IS A PREDEFINED SYSTEM TABLE
+END                      -- WHICH WILL GIVE US THE RECORD THAT 
+                         -- IS INSERTED IN THE TABLE
+```
+```sql
+-- CREATE A TRIGGER TO GIVE DELETED RECORD IN A TABLE
+CREATE TRIGGER TRIG_02 ON EMP
+FOR DELETE
+AS
+BEGIN
+  SELECT * FROM DELETED -- PREDEFINED TABLE FOR DELETE
+END
+```
+- There are no predefined table for update.
+- We can't add triggers in transactions, TCL will only support dml commands.
+```sql
+-- CREATE A LOG TABLE ENTRY
+-- CREATE A TABLE EMP_LOG FIRST
+CREATE TABLE EMP_LOG (
+  EMPNO INT,
+  ENAME VARCHAR(100),
+  SAL DECIMAL(10,2),
+  ACTION_TIME DATETIME,
+  ACTION_TYPE VARCHAR(10)
+)
+
+-- Create a trigger for all DML operations
+CREATE TRIGGER SHOW_LOG
+ON EMP
+FOR INSERT, UPDATE, DELETE
+AS
+BEGIN
+  -- Log INSERTS
+  INSERT INTO EMP_LOG (EMPNO, ENAME, SAL, ACTION_TIME, ACTION_TYPE)
+  SELECT EMPNO, ENAME, SAL, GETDATE(), 'INSERT'
+  FROM INSERTED
+
+  -- Log UPDATES
+  INSERT INTO EMP_LOG (EMPNO, ENAME, SAL, ACTION_TIME, ACTION_TYPE)
+  SELECT EMPNO, ENAME, SAL, GETDATE(), 'UPDATE'
+  FROM INSERTED
+  WHERE EXISTS (
+    SELECT 1 FROM DELETED d WHERE d.EMPNO = INSERTED.EMPNO
+  )
+
+  -- Log DELETES
+  INSERT INTO EMP_LOG (EMPNO, ENAME, SAL, ACTION_TIME, ACTION_TYPE)
+  SELECT EMPNO, ENAME, SAL, GETDATE(), 'DELETE'
+  FROM DELETED
+END
+```
+
+---
+
+# 🔁 **LOOPS in SQL**
+- Loops are used when you want to **repeat a block of SQL statements** until a **certain condition** is met.
+
+## 🧠 **Where are Loops Used?**
+- Loops are typically used in:
+  * **Stored procedures**
+  * **Functions**
+  * **Triggers**
+  * **Control-flow logic (T-SQL, PL/SQL, etc.)**
+
+## ✅ **Types of Loops (T-SQL / SQL Server)**
+
+| **Loop Type** | **Purpose**                                         |
+| ------------- | --------------------------------------------------- |
+| `WHILE` loop  | Repeats as long as a condition is true              |
+| `GOTO`        | Jumps to a labeled section of code (less preferred) |
+| `CURSOR` loop | Loops through rows in a result set                  |
+
+### 🧪 Example 1: **WHILE Loop (SQL Server / T-SQL)**
+```sql
+DECLARE @Counter INT = 1;
+
+WHILE @Counter <= 5
+BEGIN -- MANDATORY TO SET SCOPE OF LOOP  
+    PRINT 'Loop iteration: ' + CAST(@Counter AS VARCHAR);
+    SET @Counter = @Counter + 1;
+END;
+```
+🟢 Output:
+```
+Loop iteration: 1
+Loop iteration: 2
+Loop iteration: 3
+Loop iteration: 4
+Loop iteration: 5
+```
+
+### 🧪 Example 2: **Using CURSOR (Row-by-row Loop)**
+```sql
+-- print odd rows from sales order table in 1 to 500 records
+-- and how much time it is taking
+DECLARE @Name VARCHAR(100);
+
+DECLARE name_cursor CURSOR FOR
+SELECT Name FROM Employees;
+
+OPEN name_cursor;
+FETCH NEXT FROM name_cursor INTO @Name;
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    PRINT 'Employee Name: ' + @Name;
+    FETCH NEXT FROM name_cursor INTO @Name;
+END;
+
+CLOSE name_cursor;
+DEALLOCATE name_cursor;
+```
+```sql
+-- Drop the procedure if it already exists
+IF OBJECT_ID('dbo.PrintOddSalesOrders', 'P') IS NOT NULL
+    DROP PROCEDURE dbo.PrintOddSalesOrders;
+GO
+
+-- Create the stored procedure
+CREATE PROCEDURE dbo.PrintOddSalesOrders
+AS
+BEGIN
+    -- Declare variables for OrderID and row tracking
+    DECLARE @OrderID INT;
+    DECLARE @RowNum INT = 1;
+
+    -- Declare variables to track execution time
+    DECLARE @StartTime DATETIME = GETDATE();
+    DECLARE @EndTime DATETIME;
+
+    -- Declare the cursor to fetch first 500 records from SalesOrder table
+    DECLARE SalesCursor CURSOR FOR
+    SELECT TOP 500 OrderID              -- Select first 500 OrderIDs
+    FROM SalesOrder
+    ORDER BY OrderID;                  -- Ensure consistent row order
+
+    -- Open the cursor to begin processing
+    OPEN SalesCursor;
+
+    -- Fetch the first row into @OrderID
+    FETCH NEXT FROM SalesCursor INTO @OrderID;
+
+    -- Loop while there are still rows to process
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Check if the current row number is odd
+        IF @RowNum % 2 = 1
+        BEGIN
+            -- Print the row number and OrderID
+            PRINT 'Odd Row ' + CAST(@RowNum AS VARCHAR) + ': OrderID = ' + CAST(@OrderID AS VARCHAR);
+        END
+
+        -- Increment the row number counter
+        SET @RowNum = @RowNum + 1;
+
+        -- Fetch the next row into @OrderID
+        FETCH NEXT FROM SalesCursor INTO @OrderID;
+    END
+
+    -- Close the cursor after use
+    CLOSE SalesCursor;
+
+    -- Deallocate the cursor to free resources
+    DEALLOCATE SalesCursor;
+
+    -- Capture the end time
+    SET @EndTime = GETDATE();
+
+    -- Print the start and end time
+    PRINT 'Start Time: ' + CAST(@StartTime AS VARCHAR);
+    PRINT 'End Time: ' + CAST(@EndTime AS VARCHAR);
+
+    -- Print the duration in seconds
+    PRINT 'Total Duration (seconds): ' + CAST(DATEDIFF(SECOND, @StartTime, @EndTime) AS VARCHAR);
+END;
+GO
+```
+## ⚠️ Note:
+* **Avoid loops** if you can write your logic using **set-based queries** (`SELECT`, `UPDATE`, `JOIN`, etc.). Loops are slower.
+* Use **cursors** only when row-wise processing is **absolutely necessary**.
+
+---
+
+# **OUTPUT PARAMETERS**
 
 
