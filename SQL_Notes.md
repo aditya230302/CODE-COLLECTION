@@ -2379,4 +2379,690 @@ GO
 - Any parameter fixed with output keyword.
 - It sends the result back.
 
+## 📌 Example:
+```sql
+-- Procedure to add two numbers and return the result in an OUTPUT parameter
+CREATE PROCEDURE ADDITION (@X INT, @Y INT, @Z INT OUTPUT)
+AS
+BEGIN
+    SET @Z = @X + @Y
+END
+GO
+
+-- Procedure to call ADDITION and print the result
+CREATE PROCEDURE RESULT (@A INT, @B INT)
+AS
+BEGIN
+    DECLARE @C INT  -- Fixed typo: was 'DECALRE'
+    EXEC ADDITION @A, @B, @C OUTPUT
+    PRINT @C
+END
+GO
+
+-- Execute the RESULT procedure with inputs 3 and 4
+EXEC RESULT 3, 4
+```
+
+---
+
+# **FUNCTIONS**
+- To develop our own functions (user defined functions)
+- **Scalar Value Functions**
+  - Functions that return 1 value are scalar value functions.
+- **Table Value Functions**
+  - Functions that return a table are Table value functions.
+- **System Function example**
+  - `SELECT SUM(SAL) FROM EMP` : `SUM` is function and `SAL` is input.
+
+## ✅ **SCALAR VALUE FUNCTION**
+- A **Scalar Value Function** is a **user-defined function (UDF)** that returns a **single value** (like `INT`, `VARCHAR`, `DATE`, etc.).
+  
+### 🧾 Syntax:
+```sql
+CREATE FUNCTION FunctionName (@parameter DataType, ...)
+RETURNS ReturnDataType
+AS
+BEGIN
+    -- logic here
+    RETURN <single value>
+END;
+
+-- SYNTAX FOR CALLING A FUNCTION
+SELECT DBO.FunctionName
+
+-- DROP FUNCTION
+DROP FUNCTION FunctionName
+```
+- To alter a function use `ALTER FUNCTION`
+
+### 📌 Example:
+```sql
+-- Get Bonus for Employee Based on Salary
+-- Accepts salary as input AND returns a bonus as 10% of the salary.
+
+-- Create scalar value function
+CREATE FUNCTION dbo.GetBonus (@Salary DECIMAL(10, 2))
+RETURNS DECIMAL(10, 2)
+AS
+BEGIN
+    DECLARE @Bonus DECIMAL(10, 2);
+
+    -- Bonus is 10% of the salary
+    SET @Bonus = @Salary * 0.10;
+
+    RETURN @Bonus;
+END;
+```
+- ▶️ **Usage Example:**
+```sql
+-- Using the scalar function in a SELECT query
+SELECT EmpName, Salary, dbo.GetBonus(Salary) AS Bonus
+FROM Employees;
+```
+
+- ✅ Benefits:
+* Code reuse
+* Clean and modular logic
+* Can be used anywhere an expression is valid
+
+Great! Let's now cover **Table-Valued Functions (TVFs)** — another important type of **User-Defined Function (UDF)** in SQL Server.
+
+## ✅ **TABLE VALUE FUNCTION (TVF)**
+- A **Table-Valued Function** returns a **table** instead of a single scalar value.
+It can be:
+* **Inline** (single `SELECT` statement — more efficient)
+* **Multi-statement** (can include multiple logic blocks — more flexible)
+
+### ✅ **1. INLINE TABLE-VALUED FUNCTION**
+#### 🧾 Syntax:
+```sql
+CREATE FUNCTION FunctionName (@param DataType, ...)
+RETURNS TABLE
+AS
+RETURN (
+    SELECT ... FROM ... WHERE ...
+);
+```
+
+#### 📌 Example: 
+```sql
+-- Get Employees from a Specific Department
+
+-- Create Inline Table-Valued Function
+CREATE FUNCTION dbo.GetEmployeesByDept (@DeptNo INT)
+RETURNS TABLE
+AS
+RETURN
+(
+    SELECT EmpID, EmpName, DeptNo, Salary
+    FROM Employees
+    WHERE DeptNo = @DeptNo
+);
+```
+- ▶️ **Usage:**
+```sql
+SELECT * FROM dbo.GetEmployeesByDept(10);
+```
+
+### ✅ **2. MULTI-STATEMENT TABLE-VALUED FUNCTION**
+
+#### 🧾 Syntax:
+```sql
+CREATE FUNCTION FunctionName (@param DataType, ...)
+RETURNS @ResultTable TABLE (ColumnDef1, ColumnDef2, ...)
+AS
+BEGIN
+    -- Insert logic into the return table
+    INSERT INTO @ResultTable
+    SELECT ... FROM ...
+
+    RETURN;
+END;
+```
+
+#### 📌 Example: 
+```sql
+-- Return Employees with Bonus Calculated
+
+-- Create Multi-Statement TVF
+CREATE FUNCTION dbo.GetEmployeesWithBonus ()
+RETURNS @Result TABLE (
+    EmpID INT,
+    EmpName VARCHAR(100),
+    Salary DECIMAL(10,2),
+    Bonus DECIMAL(10,2)
+)
+AS
+BEGIN
+    INSERT INTO @Result
+    SELECT EmpID, EmpName, Salary, Salary * 0.1 AS Bonus
+    FROM Employees;
+
+    RETURN;
+END;
+```
+- ▶️ **Usage:**
+```sql
+SELECT * FROM dbo.GetEmployeesWithBonus();
+```
+
+- 📌 Summary Table
+
+| **Function Type**     | **Returns**  | **Use Case**                      |
+| --------------------- | ------------ | --------------------------------- |
+| Scalar Value Function | Single value | Compute and return one result     |
+| Inline Table-Valued   | Table        | Simple `SELECT`-based table logic |
+| Multi-Statement TVF   | Table        | Complex logic returning a table   |
+
+---
+
+# 📚 **INDEXES in SQL**
+- An **index** is a **performance optimization** feature in SQL. It creates a **lookup structure** (like an index in a book) to allow **faster searching, filtering, and sorting** of data in a table.
+
+## ✅ **Why Use Indexes?**
+
+| Without Index                 | With Index                                  |
+| ----------------------------- | ------------------------------------------- |
+| Table scan — checks every row | Uses B-tree/B+-tree to find rows fast       |
+| Slower on large tables        | Much faster for `WHERE`, `JOIN`, `ORDER BY` |
+
+## 🔍 **Types of Indexes**
+
+| **Type**                | **Description**                                                            |
+| ----------------------- | -------------------------------------------------------------------------- |
+| **Clustered Index**     | Sorts and stores the actual data rows in table based on the indexed column |
+| **Non-Clustered Index** | Creates a separate structure with a pointer to the actual data rows        |
+| **Unique Index**        | Prevents duplicate values in the indexed column(s)                         |
+| **Composite Index**     | An index on multiple columns (e.g. `Index(col1, col2)`)                    |
+| **Full-text Index**     | Special index for text searching                                           |
+| **Filtered Index**      | Applies index only to rows that meet a specific `WHERE` condition          |
+
+## 🧾 **Syntax & Examples**
+
+### ✅ 1. **Create Clustered Index** 
+- (Only one allowed per table)
+```sql
+CREATE CLUSTERED INDEX idx_emp_id
+ON Employees (EmpID);
+```
+📌 This sorts the **entire table** by `EmpID`.
+
+### ✅ 2. **Create Non-Clustered Index**
+```sql
+CREATE NONCLUSTERED INDEX idx_emp_name
+ON Employees (EmpName);
+```
+📌 This creates a **separate structure** to speed up searches by `EmpName`.
+
+### ✅ 3. **Create Composite Index**
+```sql
+CREATE NONCLUSTERED INDEX idx_dept_sal
+ON Employees (DeptNo, Salary);
+```
+📌 Helps with queries filtering or sorting on both `DeptNo` and `Salary`.
+
+### ✅ 4. **Create Unique Index**
+```sql
+CREATE UNIQUE INDEX idx_unique_email
+ON Employees (Email);
+```
+📌 Ensures no two employees can have the same `Email`.
+
+### ✅ 5. **Drop Index**
+```sql
+DROP INDEX idx_emp_name ON Employees;
+```
+⚡ **Performance Tip**
+- Always create indexes on:
+* Columns in `WHERE`, `JOIN`, `ORDER BY`, `GROUP BY`
+* Foreign keys
+* High-read, low-write scenarios
+
+⚠️ **Drawbacks of Indexes**
+
+| Drawback                      | Explanation                        |
+| ----------------------------- | ---------------------------------- |
+| Slower `INSERT/UPDATE/DELETE` | Because indexes need to be updated |
+| Uses extra disk space         | For each index structure           |
+| Too many indexes = slower     | SQL optimizer may get confused     |
+
+- In SQL **you don't need to manually "call" or "invoke" an index** — SQL Server (or any RDBMS) automatically decides **whether and how** to use available indexes using the **query optimizer**.
+
+
+## ✅ How Indexes Are Used 
+- Automatically When you write a query like:
+```sql
+SELECT * FROM Employees WHERE EmpName = 'John';
+```
+➡️ If you have an index on `EmpName`, **SQL Server automatically checks** whether that index improves performance and will use it **internally** to speed up the search.
+
+## ❓ How to Know if Index Is Being Used?
+- You can use **query execution plans** to **see** whether the index was used:
+
+### 🔍 In SQL Server Management Studio (SSMS):
+1. Write your query.
+2. Click on **“Include Actual Execution Plan”** (`Ctrl + M`).
+3. Execute the query.
+4. Look for operators like:
+   * **Index Seek** ✅ → Best (uses index efficiently)
+   * **Index Scan** ⚠️ → Index exists but scanning rows
+   * **Table Scan** ❌ → No index used (full table search)
+     
+📌 Example:
+
+```sql
+-- Let's say we have this index:
+CREATE NONCLUSTERED INDEX idx_empname ON Employees (EmpName);
+
+-- Now this query will automatically use it:
+SELECT * FROM Employees WHERE EmpName = 'Alice';
+```
+- You don’t need to do anything extra — **the optimizer picks it**.
+
+## 🔧 Forcing SQL to Use or Ignore Index (Advanced Use)
+
+### ✅ Force an Index (not recommended unless you're sure):
+```sql
+SELECT * FROM Employees WITH (INDEX(idx_empname))
+WHERE EmpName = 'Alice';
+```
+
+### ❌ Ignore Index:
+```sql
+SELECT * FROM Employees WITH (INDEX(0))
+WHERE EmpName = 'Alice';
+```
+> ⚠️ Use index hints **only when necessary**, because they override the optimizer and can hurt performance in other cases.
+
+✅ **Summary**
+
+| Task                    | What You Do                    |
+| ----------------------- | ------------------------------ |
+| Use Index               | Write your query as usual      |
+| Check if used           | Use Execution Plan in SSMS     |
+| Force index (if needed) | Use `WITH (INDEX(index_name))` |
+
+---
+
+# 🔁 **Conversion Functions in SQL Server**
+- Conversion functions are used to **change data from one type to another**, like from `VARCHAR` to `INT`, `DATETIME` to `VARCHAR`, etc.
+
+## 🧩 Common Conversion Functions:
+
+| **Function**                                   | **Purpose**                              | **Supports Formatting?** | **Notes**                            |
+| ---------------------------------------------- | ---------------------------------------- | ------------------------ | ------------------------------------ |
+| `CAST()`                                       | ANSI-standard type conversion            | ❌ No                     | Preferred for portability            |
+| `CONVERT()`                                    | SQL Server-specific type conversion      | ✅ Yes (style codes)      | Useful for formatting date/time      |
+| `PARSE()`                                      | Converts string to date/time or number   | ✅ Yes (uses culture)     | Slower, used when parsing user input |
+| `TRY_CAST()` / `TRY_CONVERT()` / `TRY_PARSE()` | Like above but returns `NULL` on failure | ✅ Yes                    | Safer for unpredictable input        |
+
+## ✅ **1. `CAST()`**
+
+### 🧾 Syntax:
+```sql
+CAST(expression AS target_data_type)
+```
+
+### 📌 Example:
+```sql
+SELECT CAST('123' AS INT) AS ConvertedInt;            -- returns 123
+SELECT CAST(123.45 AS VARCHAR(10)) AS TextVal;        -- returns '123.45'
+```
+
+## ✅ **2. `CONVERT()`**
+
+### 🧾 Syntax:
+```sql
+CONVERT(target_data_type, expression [, style_code])
+```
+- `[, style_code]` is optional
+
+### 📌 Example:
+```sql
+-- Convert float to int
+SELECT CONVERT(INT, 123.89) AS IntegerPart;           -- returns 124 (rounded)
+
+-- Convert date to string
+SELECT CONVERT(VARCHAR(20), GETDATE(), 103) AS UKDate;  -- returns '09/06/2025'
+```
+
+🧾 Common `style_code` for date formatting:
+
+| Style Code | Format Type      | Example Output        |
+| ---------- | ---------------- | --------------------- |
+| 101        | USA `mm/dd/yyyy` | `06/09/2025`          |
+| 103        | UK `dd/mm/yyyy`  | `09/06/2025`          |
+| 120        | ISO `yyyy-mm-dd` | `2025-06-09 13:45:00` |
+
+## ✅ **3. `PARSE()`**
+> `PARSE()` is useful when converting **locale-aware strings** to numbers or dates.
+- Sometimes cast and convert can't recognize the formate then use parse.
+- But parse uses a lot of memory so don't use it unless cast/convert fails.
+### 🧾 Syntax:
+```sql
+PARSE(expression AS data_type [USING culture])
+```
+
+### 📌 Example:
+```sql
+SELECT PARSE('June 9, 2025' AS DATETIME) AS ParsedDate;
+
+SELECT PARSE('1,234.56' AS FLOAT USING 'en-US') AS ParsedUS;
+SELECT PARSE('1.234,56' AS FLOAT USING 'de-DE') AS ParsedDE;
+```
+
+## ✅ **Bonus: TRY Versions**
+- These are **safe conversions** — instead of failing with an error, they return `NULL` if conversion fails.
+
+### 🧾 Examples:
+```sql
+SELECT TRY_CAST('abc' AS INT) AS SafeCast;     -- returns NULL
+SELECT TRY_CONVERT(DATE, '2025-06-09') AS SafeDate;
+SELECT TRY_PARSE('09/06/2025' AS DATE USING 'en-GB') AS UKParsed;
+```
+
+✅ Summary Table
+
+| Function        | Use For                       | Style Formatting | Fails on Error?     |
+| --------------- | ----------------------------- | ---------------- | ------------------- |
+| `CAST()`        | Simple, portable conversions  | ❌ No             | ✅ Yes               |
+| `CONVERT()`     | Date/Time formatting          | ✅ Yes            | ✅ Yes               |
+| `PARSE()`       | Locale-based string parsing   | ✅ Yes (culture)  | ✅ Yes               |
+| `TRY_CAST()`    | Safe numeric/date conversions | ❌ No             | ❌ No (returns NULL) |
+| `TRY_CONVERT()` | Safe version of `CONVERT()`   | ✅ Yes            | ❌ No                |
+| `TRY_PARSE()`   | Safe version of `PARSE()`     | ✅ Yes            | ❌ No                |
+
+---
+
+# 🔁 **Recursive CTE (Common Table Expression)**
+- A **recursive CTE** is used to perform **hierarchical or recursive operations**, such as **traversing parent-child relationships**.
+
+### 🧾 Syntax:
+```sql
+WITH CTE_Name (columns...) AS (
+    -- Anchor member (base query)
+    SELECT ...
+    FROM ...
+    WHERE ...
+
+    UNION ALL
+
+    -- Recursive member (refers back to CTE)
+    SELECT ...
+    FROM CTE_Name
+    JOIN ... ON ...
+)
+SELECT * FROM CTE_Name;
+```
+
+### 📌 Example:
+```sql
+-- Get hierarchy from Employee table
+
+-- Table: Employees(EmpID, EmpName, ManagerID)
+
+WITH EmpHierarchy AS (
+    -- Base level: top managers (no manager)
+    SELECT EmpID, EmpName, ManagerID, 1 AS Level
+    FROM Employees
+    WHERE ManagerID IS NULL
+
+    UNION ALL
+
+    -- Recursively add subordinates
+    SELECT e.EmpID, e.EmpName, e.ManagerID, eh.Level + 1
+    FROM Employees e
+    INNER JOIN EmpHierarchy eh ON e.ManagerID = eh.EmpID
+)
+SELECT * FROM EmpHierarchy;
+```
+
+---
+
+# 🔁 **Eliminating Duplicates**
+
+### ✅ Using `DISTINCT`
+```sql
+SELECT DISTINCT column1, column2 FROM table;
+```
+
+### ✅ Using `ROW_NUMBER()` and CTE to delete duplicates:
+```sql
+WITH CTE AS (
+    SELECT *, 
+           ROW_NUMBER() OVER (PARTITION BY column1, column2 ORDER BY ID) AS rn
+    FROM table
+)
+DELETE FROM CTE WHERE rn > 1;
+```
+
+---
+
+# 📐 **Normalization in SQL**
+- Normalization is the process of **organizing data** in a database to:
+* Eliminate redundancy
+* Ensure data integrity
+
+## ✅ 1NF (First Normal Form)
+
+* Each cell must hold a **single atomic value**.
+* No repeating groups or arrays.
+
+### ❌ Bad:
+
+| EmpID | EmpName | Skills       |
+| ----- | ------- | ------------ |
+| 1     | Alice   | Java, Python |
+
+### ✅ Good:
+
+| EmpID | EmpName | Skill  |
+| ----- | ------- | ------ |
+| 1     | Alice   | Java   |
+| 1     | Alice   | Python |
+
+## ✅ 2NF (Second Normal Form)
+* Must satisfy 1NF.
+* **No partial dependency** (i.e., non-key attribute depends only on part of composite key).
+
+### ❌ Bad:
+- In a table with a composite key `(StudentID, CourseID)`:
+
+| StudentID | CourseID | StudentName |
+| --------- | -------- | ----------- |
+
+- Here, `StudentName` depends only on `StudentID` ⇒ **partial dependency**
+
+### ✅ Good:
+- Split into two tables:
+* `Students(StudentID, StudentName)`
+* `Enrollments(StudentID, CourseID)`
+
+## ✅ **3NF (Third Normal Form)**
+
+### ✅ **Rules:**
+* Must be in **2NF**
+* **No transitive dependency**: A non-key column should not depend on another non-key column.
+
+### 🔍 **Example (violating 3NF)**
+
+| StudentID | StudentName | DepartmentID | DepartmentName |
+| --------- | ----------- | ------------ | -------------- |
+| 101       | Alice       | D01          | Computer Sci   |
+| 102       | Bob         | D02          | Electronics    |
+
+Here:
+
+* `DepartmentName` depends on `DepartmentID` (which is not a primary key of the table) ⇒ **transitive dependency**
+
+### ✅ **Fix (Apply 3NF)**
+
+**Table 1:** `Students(StudentID, StudentName, DepartmentID)`
+**Table 2:** `Departments(DepartmentID, DepartmentName)`
+
+## ✅ **BCNF (Boyce-Codd Normal Form)**
+> BCNF is a **stronger version** of 3NF.
+
+### ✅ **Rules:**
+* Must be in **3NF**
+* For every functional dependency **A → B**, `A` must be a **super key**
+
+### 🔍 **Example (violating BCNF)**
+| Course | Instructor | Room |
+| ------ | ---------- | ---- |
+| DBMS   | John       | 101  |
+| DBMS   | John       | 102  |
+
+- Assume:
+* `Course → Instructor`
+* But `(Course, Room)` is the primary key ⇒ Instructor is functionally dependent on **non-super key** ⇒ violates **BCNF**
+
+### ✅ **Fix:**
+
+**Table 1:** `CourseInstructor(Course, Instructor)`
+**Table 2:** `CourseRoom(Course, Room)`
+
+---
+
+# ✅ **4NF (Fourth Normal Form)**
+
+> 4NF deals with **multi-valued dependencies** — when one column depends on the key but is **independent of other columns**.
+
+### ✅ **Rules:**
+
+* Must be in **BCNF**
+* No **multi-valued dependencies** in a single table
+
+### 🔍 **Example (violating 4NF)**
+
+| StudentID | Hobby    | Language |
+| --------- | -------- | -------- |
+| 101       | Painting | English  |
+| 101       | Music    | English  |
+| 101       | Painting | French   |
+
+Here:
+
+* Hobbies and Languages are **independent multi-valued attributes** ⇒ violates 4NF
+
+### ✅ **Fix:**
+
+**Table 1:** `StudentHobbies(StudentID, Hobby)`
+**Table 2:** `StudentLanguages(StudentID, Language)`
+
+## 📊 **Summary Comparison Table**
+
+| **Normal Form** | **Rule**                                                       | **Eliminates**                     |
+| --------------- | -------------------------------------------------------------- | ---------------------------------- |
+| 1NF             | Atomic values (no arrays/multiple values per column)           | Repeating groups                   |
+| 2NF             | No partial dependency (non-key attribute depends on whole key) | Partial dependencies               |
+| 3NF             | No transitive dependency                                       | Transitive dependencies            |
+| BCNF            | For every A → B, A is a super key                              | All anomalies from 3NF not covered |
+| 4NF             | No multi-valued dependency                                     | Multivalued dependency anomalies   |
+
+---
+
+# 🔄 **Denormalization**
+- The **reverse of normalization** — combining tables to:
+* Improve **read/query performance**
+* Avoid **complex joins**
+* But can introduce **redundancy**
+
+## ✅ Denormalized Example:
+
+Instead of storing department name in a separate table:
+
+```sql
+Employees(EmpID, EmpName, DeptID, DeptName)  -- Redundant DeptName
+```
+
+Denormalization is common in **reporting, data warehousing**, or **read-heavy systems**.
+
+---
+
+## 🔁 Advantages of Normalisation
+
+| Advantage                     | Explanation                                              |
+| ----------------------------- | -------------------------------------------------------- |
+| Eliminates Redundancy         | No duplicate data in multiple places                     |
+| Ensures Data Consistency      | Same information appears the same throughout the DB      |
+| Easier Maintenance            | One place to update; fewer chances for mistakes          |
+| Prevents Anomalies            | Insert, update, delete anomalies are avoided             |
+| Improves Performance (Write)  | Smaller tables = faster updates/inserts                  |
+| Better Organization           | Easier to read, maintain, and scale                      |
+| Enforces Integrity with FK/PK | Business rules and relationships are properly maintained |
+
+---
+
+# 🧪 **ACID Properties in DBMS**
+> ACID stands for **Atomicity, Consistency, Isolation, and Durability** — the four key properties of a **database transaction**.
+
+## 1. ⚛️ **Atomicity**
+* A **transaction is all-or-nothing**.
+* Either **all operations succeed**, or **none are applied**.
+
+### 🔄 Example:
+```sql
+BEGIN TRANSACTION
+  UPDATE Accounts SET Balance = Balance - 500 WHERE AccountID = 101;
+  UPDATE Accounts SET Balance = Balance + 500 WHERE AccountID = 102;
+COMMIT;
+```
+
+If any step fails (e.g., due to insufficient funds), the whole transaction **rolls back**.
+
+---
+
+## 2. 🎯 **Consistency**
+* The database must go **from one valid state to another**.
+* **All rules, constraints, and relationships** are preserved.
+
+### 🛡️ Example:
+* A `CHECK constraint` ensures salary cannot be negative.
+* If a transaction violates this, it fails and the DB remains consistent.
+
+---
+
+## 3. 🔒 **Isolation**
+* Concurrent transactions should **not interfere** with each other.
+* Each transaction should **appear to run independently**.
+
+### 🔄 Example:
+
+Two users transferring money at the same time won’t see each other’s intermediate states.
+
+SQL provides **isolation levels** like:
+
+* `READ UNCOMMITTED`
+* `READ COMMITTED`
+* `REPEATABLE READ`
+* `SERIALIZABLE`
+
+Higher isolation = fewer concurrency issues but may affect performance.
+
+---
+
+## 4. 💾 **Durability**
+* Once a transaction is **committed**, it is **permanently saved**.
+* Even if there is a **power failure** or **crash**, the data will not be lost.
+
+### 🔐 Example:
+
+After committing a transfer of ₹500, the change remains safe on disk even if the system crashes immediately.
+
+---
+
+# 📊 Summary Table
+
+| **Property** | **Explanation**                                         | **Real-Life Analogy**                              |
+| ------------ | ------------------------------------------------------- | -------------------------------------------------- |
+| Atomicity    | All operations in a transaction happen or none at all   | Booking a movie ticket: seat is confirmed or not   |
+| Consistency  | Database remains valid after any transaction            | No double seat booking or negative balance allowed |
+| Isolation    | Transactions don’t affect each other                    | Multiple people booking tickets simultaneously     |
+| Durability   | Committed changes persist even after a crash or restart | Once booked, your ticket is stored securely        |
+
+---
+
+
+
 
