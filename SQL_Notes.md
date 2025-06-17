@@ -2376,5 +2376,7 @@ GO
 ---
 
 # **OUTPUT PARAMETERS**
+- Any parameter fixed with output keyword.
+- It sends the result back.
 
 
