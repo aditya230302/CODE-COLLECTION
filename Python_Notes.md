@@ -114,3 +114,69 @@ d = int(c)         # Integer
 
 ---
 # **Indexing**
+* **Index**    : It is the position of a value (starting from 0)
+* **Indexing** : It is the process of excessing or extracting the element at a particular position.
+```py
+# Syntax
+variable_name[index]
+
+# Example
+a = 'Aditya'
+a[0] # A
+a[1] # d
+a[2] # i
+a[3] # t
+a[4] # y
+a[5] # a
+```
+1. **Forward Indexing**  :   0   1  2  3  4  5  6  7  8  9  10
+2. **Backward Indexing** : -11 -10 -9 -8 -7 -6 -5 -4 -3 -2  -1
+
+![image](https://github.com/user-attachments/assets/77579852-f3ad-4764-85ee-0f43ddf6e14f)
+
+---
+
+# **Slicing**
+- If we have to extract one or more than one element from the collection.
+```python
+# Syntax
+variable_name[start_index_number : end_index_number]
+```
+> last index number is not included
+```py
+# Example
+a = 'INTELLIPAAT'
+a[0:4] # INTE
+a[3:6] # ELL
+```
+> if we are not giving eny start index value it will start from the begining
+> if we are not giving any end index value it we go till the end
+```py
+a[:4]  # INTE
+a[7:]  # PAAT
+a[:]   # INTELLIPAAT
+```
+> Slicing will not give error in case we are giving out of bound (extra) indexing, instead it will show blank output.
+```py
+a[10:15] # T
+```
+
+---
+
+# **Step Indexing**
+- steps : by how many levels we want to jump the index
+```py
+# Syntax
+variable_name[start : end : steps]
+
+# Example
+a = 'INTELLIPAAT'
+a[::2]  # ITLIAT
+a[::-1] # TAAPILLETNI
+```
+> `a[::-1]` reverses the string
+
+---
+
+# **Collective and Sequential Data Types**
+- String, List, Tuple, Set, Dictionary.
