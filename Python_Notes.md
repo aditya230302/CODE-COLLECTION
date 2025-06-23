@@ -180,3 +180,55 @@ a[::-1] # TAAPILLETNI
 
 # **Collective and Sequential Data Types**
 - String, List, Tuple, Set, Dictionary.
+
+### **List**
+- Contains different types of data.
+- Ordered and mutable
+```py
+# Syntax
+L = []  # Empty List
+type(L) # list
+
+# Example
+L = [10, 20, 30, 40, 2.3, 4.5, 'suraj', 'python', 'apple']
+# List Indexing
+L[0]  # 10
+# Reverse Indexing
+L[-1] # 'apple'
+# Slicing
+L[:4] # [10, 20, 30, 40]
+
+# Changing a value un list
+L[1] = 200          # [10, 200, 30, 40, 2.3, 4.5, 'suraj', 'python', 'apple']
+L[1:3] = ['f', 'g'] # [10, 'f', 'g', 40, 2.3, 4.5, 'suraj', 'python', 'apple']
+```
+- **append()** : accepts one argument and insert it at the end of the list
+```py
+L.append('virat') # [10, 'f', 'g', 40, 2.3, 4.5, 'suraj', 'python', 'apple', 'virat']
+```
+- **insert()** : insert value at the mentioned index number, and shift the original value at that place by 1 position to left.
+```py
+# Syntax
+list.insert(index_number, value)
+
+# Example
+l = [1, 2, 3]
+l.insert(1, 'apple') # [1, 'apple', 2, 3]
+```
+- **extend()** : add 2 lists together to make 1 list.
+```py
+l1 = [1, 'suraj', 2, 3, 4]
+l2 = [2.3, 3.4, 4.5]
+l1.extend(l2) # [1, 'suraj', 2, 3, 4, 2.3, 3.4, 4.5]
+# l1 + l2 is same as l1.extend(l2)
+```
+- **remove()** : Just to delete the value from the list
+```py
+L.remove('suraj')
+print(L) # [10, 20, 30, 40, 2.3, 4.5, 'python', 'apple']
+```
+- **pop()** : remove as well return the value and it accepts index number
+```py
+L.pop(1) # 'apple'
+```
+- **clear()** : 
