@@ -181,7 +181,7 @@ a[::-1] # TAAPILLETNI
 # **Collective and Sequential Data Types**
 - String, List, Tuple, Set, Dictionary.
 
-### **List**
+### **1. List**
 - Contains different types of data.
 - Ordered and mutable
 ```py
@@ -202,11 +202,11 @@ L[:4] # [10, 20, 30, 40]
 L[1] = 200          # [10, 200, 30, 40, 2.3, 4.5, 'suraj', 'python', 'apple']
 L[1:3] = ['f', 'g'] # [10, 'f', 'g', 40, 2.3, 4.5, 'suraj', 'python', 'apple']
 ```
-- **append()** : accepts one argument and insert it at the end of the list
+- **append(value)** : accepts one argument and insert it at the end of the list
 ```py
 L.append('virat') # [10, 'f', 'g', 40, 2.3, 4.5, 'suraj', 'python', 'apple', 'virat']
 ```
-- **insert()** : insert value at the mentioned index number, and shift the original value at that place by 1 position to left.
+- **insert(index_number, value)** : insert value at the mentioned index number, and shift the original value at that place by 1 position to left.
 ```py
 # Syntax
 list.insert(index_number, value)
@@ -215,20 +215,251 @@ list.insert(index_number, value)
 l = [1, 2, 3]
 l.insert(1, 'apple') # [1, 'apple', 2, 3]
 ```
-- **extend()** : add 2 lists together to make 1 list.
+- **extend(list)** : add 2 lists together to make 1 list.
 ```py
 l1 = [1, 'suraj', 2, 3, 4]
 l2 = [2.3, 3.4, 4.5]
 l1.extend(l2) # [1, 'suraj', 2, 3, 4, 2.3, 3.4, 4.5]
 # l1 + l2 is same as l1.extend(l2)
 ```
-- **remove()** : Just to delete the value from the list
+- **remove(value)** : Just to delete the value from the list
 ```py
 L.remove('suraj')
 print(L) # [10, 20, 30, 40, 2.3, 4.5, 'python', 'apple']
 ```
-- **pop()** : remove as well return the value and it accepts index number
+- **pop(index)** : remove as well return the value and it accepts index number
 ```py
 L.pop(1) # 'apple'
 ```
-- **clear()** : 
+- **clear()** : Delete all the values of the list.
+```py
+L.clear()
+```
+- **del** : delete list.
+```py
+del L1
+```
+
+### **2. Tuple**
+- Collection of hetrogenous data types.
+- Ordered data types.
+- Immutable : we can't update the values of tuples directly.
+```py
+# Syntax
+t = ()
+type(t) # tuple
+
+# len() : helps to get the no. of elements
+len(t)
+# Example
+t = (1,2,3)
+t[2] # 3
+t[2] = 789 # Error
+```
+- If we need to update the value of a tuple we first convert it to list
+```py
+convert_tuple_to_list = list(t)
+convert_tuple_to_list[2] = 987
+t = tuple(convert_tuple_to_list)
+t # (1,2,987)
+```
+- Combining two tuples
+```py
+t1 = (1,2,3)
+t = t + t1
+t # (1,2,987,1,2,3)
+```
+
+### **3. Set**
+- Collection of hetrogenous data types
+- Unordered : will not have index values
+- mutable data type : can be changed
+- don't have duplicates
+```py
+# Syntax
+S = {1,2,3,4.4,5.5,'suraj','python'}
+type(S) # set
+
+# Slicing
+S[3] # Error
+```
+- **add(value)** : to add value
+```py
+S.add(100)
+S.add('S')
+S # {1,100,2,3,4.4,5.5,'python','S','suraj'}
+```
+- **remove(value) : To remove value
+```py
+S.remove(100)
+```
+- **union(set)** : To join all the values of 2 sets without duplicates
+```py
+S1 = {1,2,3,4,5,6,7}
+S2 = {1,2,3,4,9,10,11}
+S1.union(S2) # {1,2,3,4,5,6,7,9,10,11}
+```
+
+### **4. Dictionary**
+- key   : User defined index value
+- value : Value that we want to share
+```py
+# Syntax
+D = { key1 : value1,
+      key2 : value2,...}
+# Empty dictionary
+d = {} 
+type(d) # dict
+
+# Example
+d = {'name'   : 'suraj',
+     'age'    : 30,
+     'weight' : 78}
+d['age']  # 30
+d['name'] #'suraj'
+```
+- **values()**
+```py
+h = {'name' : ['suraj', 'adi', 'kunal'],
+     'age'  : [23,34,45]}
+h.values() # dict_values([['suraj','adi','kunal'],[23,34,45]])
+```
+- **Keys()**
+```py
+h.keys() # dict_keys(['name','age'])
+```
+- **items()**
+```py
+h.items() # dict_items([('name',['suraj','adi','kunal']), ('age', [23,34,45])])
+```
+
+---
+
+# **Coditional Statements / Loops**
+### **1. if-else**
+```py
+# Syntax
+if(condition): # if condition is true
+  task 1 code
+else : # if condition is false
+  task 2 code
+```
+
+### **2. More than one if-else loop : elif/else if**
+```py
+if(condition1):
+  code
+elif(condition2): # else if
+  code
+.
+.
+.
+else : # final when all above conditions are false
+  code
+```
+
+### **3. for loop**
+- It works with range
+```py
+# Example
+for i in range(10): # last element of range is not considered
+  print(i) # 0 1 2 3 4 5 6 7 8 9
+```
+
+### **4. while loop**
+- works with condition
+```py
+# Syntax
+while(condition):
+  code
+  increment/decrement
+
+# Example : write a program to write/print the table of any number
+num = int(input("enter the number : "))
+i = 1
+while(i<=10):
+  print(f"{num}*{i} = {num*i}")
+  i = i+1
+```
+
+---
+
+# **User Defined Functions**
+- **def** : keyword, which we use to create a function
+```py
+# Syntax
+def function_name(parameters):
+  code
+
+# calling function
+function_name(parameters by user)
+```
+---
+
+# **Lambda Function**
+- nameless function, so we need to store them in a variable
+- one line function
+```py
+# Example
+adder = lambda a,b,c : a+b+c
+square = a : a*a
+
+# Calling Lambda Function
+adder(1,2,3) # 6
+square(3) # 9
+```
+
+---
+
+# **OOPs : Object Oriented Programming**
+- It is a concept or an approach where everything is represented in the form of classes and objects.
+- **Classes** :
+  - Collection of objects.
+  - It contains the blueprint of the program.
+- **Object** :
+  - Objects are the instance of the class
+  - instance : It represents a concrete realization of the class and has its own unique state
+- There are 4 main pillars of OOPs:
+1. **Inheritance**   : Passing the properties from parent to child
+2. **Polymorphism**  : Multiple Forms
+3. **Abstraction**   : Showing only information relevant to the user, all the information that is not required by the user is hidden.
+4. **Encapsulation** : To bundle data and methods into easy to use units.
+```py
+# Syntax
+class class_name:
+  code
+
+object_name = class_name()
+
+# Example
+class number:
+  a = 10
+  b = 20
+
+obj1 = number()
+obj1.b # 20
+obj1.a # 10
+```
+- Each class can have multiple objects but that might create a bit of confusion.
+- We can access both variables and function of a class using object
+
+- **self** :
+  - It is a special paramter that gives refrence to the current instance.
+  - Without self paramter it will show `TypeError : classfunc1.func1() takes 0 positional arguments but 1 was given`
+  - We will get an error because when we call a function, the function by default takes an argument that is the refence of object to class to access the function.
+```py
+class classfunc1:
+  def func1(self):
+    print("Hello")
+
+Obj2 = classfunc1()
+Obj2.func1() # "Hello"
+```
+- Whenever we call a function, an object reference will always be passed, that is 1 more argument, so we need self keyword.
+- If we only call object, it will show memory refrence.
+```py
+obj2 # <main_.classfunc1 at 0x1d76...>
+```
+
+- **__init__** :
+  - 
